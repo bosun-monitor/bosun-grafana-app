@@ -6,32 +6,9 @@ Extensions, custom &amp; experimental panels
 Examples
 ===========
 
-### Adding Custom Panels
-
-~~~
-plugins: {
-  // list of plugin panels
-  panels: {
-   'custom panel name': { path: '../plugins/panels/custom.panel.example' } 
-  },
-  // requirejs modules in plugins folder that should be loaded
-  // for example custom datasources
-  dependencies: [],
-}
-~~~
-
 ### Adding custom data sources
 
-~~~
-datasources: {
-  custom: {
-    type: 'CustomDatasource',
-    hello: 'some property'
-  },
-},
+Clone or [Download](https://github.com/grafana/grafana-plugins/archive/master.zip) a zip archive of this repository and extract it.
 
-plugins: {
-  dependencies: ['datasource.example']
-},
-~~~
-
+Copy the data source you want to `/usr/share/grafana/public/app/plugins/datasource/`. Then restart `grafana-server`. The new data source
+should now be avalilable in the data source type dropdown in the `Add Data Source` View.
