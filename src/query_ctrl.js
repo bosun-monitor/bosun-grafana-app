@@ -1,18 +1,25 @@
-define([
-  'angular',
-  'lodash',
-],
-function (angular) {
-  'use strict';
+import {QueryCtrl} from 'app/plugins/sdk';
+import './css/query-editor.css!'
 
-  var module = angular.module('grafana.controllers');
+export class BosunDatasourceQueryCtrl extends QueryCtrl {
 
-  module.controller('BosunQueryCtrl', function($scope) {
+  constructor($scope, $injector, uiSegmentSrv)  {
+    super($scope, $injector);
 
-    $scope.init = function() {
-      var target = $scope.target;
-      target.expr = target.expr || '';
-    };
-    $scope.init();
-  });
-});
+    this.scope = $scope;
+    this.uiSegmentSrv = uiSegmentSrv;
+    this.target.target = this.target.target || 'Bosun Query';
+  }
+
+  getOptions() {
+    return this.datasource.metricFindQuery(this.target)
+      .then(this.uiSegmentSrv.transformToSegments(false));
+      // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
+  }
+
+  onChangeInternal() {
+    this.panelCtrl.refresh(); // Asks the panel to refresh data.
+  }
+}
+
+BosunDatasourceQueryCtrl.templateUrl = 'partials/query.editor.html';
