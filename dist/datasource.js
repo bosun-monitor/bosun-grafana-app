@@ -104,7 +104,7 @@ var BosunDatasource = exports.BosunDatasource = function () {
         _.each(sortedTags, function (value) {
           scopedVars['tag_' + value.key] = { "value": value.value };
         });
-        metricLabel = templateSrv.replace(target.alias, scopedVars);
+        metricLabel = this.templateSrv.replace(target.alias, scopedVars);
       } else {
         tagData = [];
         _.each(sortedTags, function (tag) {
