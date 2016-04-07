@@ -1,33 +1,44 @@
 'use strict';
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
+System.register(['./datasource', './query_ctrl'], function (_export, _context) {
+  var BosunDatasource, BosunDatasourceQueryCtrl, BosunConfigCtrl, BosunQueryOptionsCtrl;
+
+  function _classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+      throw new TypeError("Cannot call a class as a function");
+    }
+  }
+
+  return {
+    setters: [function (_datasource) {
+      BosunDatasource = _datasource.BosunDatasource;
+    }, function (_query_ctrl) {
+      BosunDatasourceQueryCtrl = _query_ctrl.BosunDatasourceQueryCtrl;
+    }],
+    execute: function () {
+      _export('ConfigCtrl', BosunConfigCtrl = function BosunConfigCtrl() {
+        _classCallCheck(this, BosunConfigCtrl);
+      });
+
+      BosunConfigCtrl.templateUrl = 'partials/config.html';
+
+      _export('QueryOptionsCtrl', BosunQueryOptionsCtrl = function BosunQueryOptionsCtrl() {
+        _classCallCheck(this, BosunQueryOptionsCtrl);
+      });
+
+      BosunQueryOptionsCtrl.templateUrl = 'partials/query.options.html';
+
+      //class BosunAnnotationsQueryCtrl {}
+      //BosunAnnotationsQueryCtrl.templateUrl = 'partials/annotations.editor.html'
+
+      _export('Datasource', BosunDatasource);
+
+      _export('QueryCtrl', BosunDatasourceQueryCtrl);
+
+      _export('ConfigCtrl', BosunConfigCtrl);
+
+      _export('QueryOptionsCtrl', BosunQueryOptionsCtrl);
+    }
+  };
 });
-exports.QueryOptionsCtrl = exports.ConfigCtrl = exports.QueryCtrl = exports.Datasource = undefined;
-
-var _datasource = require('./datasource');
-
-var _query_ctrl = require('./query_ctrl');
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var BosunConfigCtrl = function BosunConfigCtrl() {
-  _classCallCheck(this, BosunConfigCtrl);
-};
-
-BosunConfigCtrl.templateUrl = 'partials/config.html';
-
-var BosunQueryOptionsCtrl = function BosunQueryOptionsCtrl() {
-  _classCallCheck(this, BosunQueryOptionsCtrl);
-};
-
-BosunQueryOptionsCtrl.templateUrl = 'partials/query.options.html';
-
-//class BosunAnnotationsQueryCtrl {}
-//BosunAnnotationsQueryCtrl.templateUrl = 'partials/annotations.editor.html'
-
-exports.Datasource = _datasource.BosunDatasource;
-exports.QueryCtrl = _query_ctrl.BosunDatasourceQueryCtrl;
-exports.ConfigCtrl = BosunConfigCtrl;
-exports.QueryOptionsCtrl = BosunQueryOptionsCtrl;
 //# sourceMappingURL=module.js.map

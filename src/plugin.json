@@ -2,7 +2,6 @@
   "name": "Bosun",
   "id": "bosun-datasource",
   "type": "datasource",
-  "staticRoot": ".",
 
   "partials": {
     "config": "public/app/plugins/datasource/bosun/partials/config.html"
