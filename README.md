@@ -1,14 +1,12 @@
-grafana-plugins
-===============
+# bosun-datasource
+Bosun datasource plugin for Grafana
 
-Extensions, custom &amp; experimental panels
+It's still really crude but the basic functions should be working
 
-Examples
-===========
+This is a porting effort based on the code from https://github.com/grafana/grafana-plugins/tree/master/datasources/bosun
+I'm creating a separate repository to make it easier to develop and install using grafana-cli
 
-### Adding custom data sources
-
-Clone or [Download](https://github.com/grafana/grafana-plugins/archive/master.zip) a zip archive of this repository and extract it.
-
-Copy the data source you want to `/usr/share/grafana/public/app/plugins/datasource/`. Then restart `grafana-server`. The new data source
-should now be avalilable in the data source type dropdown in the `Add Data Source` View.
+TODO List:
+* Fix query interface
+* Add support for Alias
+* Fix support for Tables
