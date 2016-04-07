@@ -2,7 +2,16 @@
 	<ul class="gf-form-list">
     <li class="gf-form-item query-keyword">Query</li>
     <li>
-      <metric-segment-model property="ctrl.target.expr" get-options="ctrl.getOptions()" on-change="ctrl.onChangeInternal()" css-class="gf-form-item-xxlarge"></metric-segment-model>
+      <textarea
+             class="input-xxlarge"
+             ng-model="ctrl.target.expr"
+             spellcheck='false'
+             placeholder="query expression"
+             data-min-length=0 data-items=100
+             ng-model-onblur
+             style="color:black;"
+             ng-change="ctrl.onChangeInternal()">
+      </textarea>
     </li>
   </ul>
 </query-editor-row>

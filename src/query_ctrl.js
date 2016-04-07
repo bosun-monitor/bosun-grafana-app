@@ -4,6 +4,7 @@ import './css/query-editor.css!'
 export class BosunDatasourceQueryCtrl extends QueryCtrl {
 
   constructor($scope, $injector, uiSegmentSrv)  {
+    //debugger;
     super($scope, $injector);
 
     this.scope = $scope;

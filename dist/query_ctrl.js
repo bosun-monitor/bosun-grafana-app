@@ -24,6 +24,8 @@ var BosunDatasourceQueryCtrl = exports.BosunDatasourceQueryCtrl = function (_Que
     _classCallCheck(this, BosunDatasourceQueryCtrl);
 
     var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(BosunDatasourceQueryCtrl).call(this, $scope, $injector));
+    //debugger;
+
 
     _this.scope = $scope;
     _this.uiSegmentSrv = uiSegmentSrv;
