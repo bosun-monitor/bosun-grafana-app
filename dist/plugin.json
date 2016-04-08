@@ -14,14 +14,19 @@
     "description": "Bosun datasource",
     "author": {
       "name": "Bosun Team",
-      "url": "http://www.bosun.org"
+      "url": "http://bosun.org"
+    },
+    "keywords": ["bosun"],
+    "logos": {
+      "small": "src/img/bosun-logo-mark.svg",
+      "large": "src/img/bosun-logo-mark.svg"
     },
     "links": [
-      {"name": "GitHub", "url": "https://github.com/vitorboschi/bosun-datasource"},
-      {"name": "MIT License", "url": "https://github.com/vitorboschi/bosun-datasource/blob/master/LICENSE"}
+      {"name": "GitHub", "url": "https://github.com/bosun-monitor/bosun-grafana-datasource"},
+      {"name": "MIT License", "url": "https://github.com/bosun-monitor/bosun-grafana-datasource/blob/master/LICENSE"}
     ],
     "version": "0.0.1",
-    "updated": "2016-04-07"
+    "updated": "2016-04-08"
   },
 
   "dependencies": {
