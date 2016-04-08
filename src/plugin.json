@@ -16,6 +16,11 @@
       "name": "Bosun Team",
       "url": "http://bosun.org"
     },
+    "keywords": ["bosun"],
+    "logos": {
+      "small": "src/img/bosun-logo-mark.svg",
+      "large": "src/img/bosun-logo-mark.svg"
+    },
     "links": [
       {"name": "GitHub", "url": "https://github.com/bosun-monitor/bosun-grafana-datasource"},
       {"name": "MIT License", "url": "https://github.com/bosun-monitor/bosun-grafana-datasource/blob/master/LICENSE"}
