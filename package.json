@@ -5,7 +5,7 @@
   "description": "",
   "repository": {
     "type": "git",
-    "url": "git@github.com:vitorboschi/bosun-datasource.git"
+    "url": "git@github.com:bosun-monitor/bosun-grafana-datasource.git"
   },
   "devDependencies": {
     "babel": "~6.5.1",
