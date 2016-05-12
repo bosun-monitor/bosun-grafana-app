@@ -1,32 +1,35 @@
-<query-editor-row ctrl="ctrl">
-    <li class="gf-form-item query-keyword">
+<query-editor-row query-ctrl="ctrl">
+	<div class="gf-form-inline">
+		<div class="gf-form">
+    		<label class="gf-form-label query-keyword">
 	Query:
 	<tip>You can enter any Bosun query here</tip>
-	</li>
-    <li style="width: 50%;">
-      <textarea
-             class="gf-form-input"
-             
+	</label>
+      <input
+             class="gf-form-input gf-form-textarea"
              ng-model="ctrl.target.expr"
              spellcheck='false'
              placeholder='q("avg:$ds-avg:rate:os.cpu{host=*bosun*}", "$start", "")'
              data-min-length=0 data-items=150
              ng-model-onblur
              ng-change="ctrl.onChangeInternal()">
-      </textarea>
+      </input>
 
-    </li>
-	  <li class="tight-form-item query-keyword">
+    </div>
+    
+    
+	  <div class="gf-form">
+    	<label class="gf-form-label query-keyword width-8">
 	  Alias:
 	  <tip>Use patterns like $tag_tagname to replace part of the alias for a tag value</tip>
-	  </li>
-	  <li>
-	  <input type="text" class="tight-form-input"
+	  </label>
+	  <input type="text" class="gf-form-input"
 	  ng-model="ctrl.target.alias"
 	  spellcheck='false'
 	  placeholder="series alias"
 	  data-min-length=0 data-items=100
 	  ng-blur="ctrl.targetBlur()"
 	  ng-change="ctrl.onChangeInternal()"></input>
-	  </li>
+	  </div>
+	  </div>
 </query-editor-row>
