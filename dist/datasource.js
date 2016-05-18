@@ -125,6 +125,59 @@ System.register(["app/core/table_model"], function (_export, _context) {
                         });
                     }
                 }, {
+                    key: "metricFindQuery",
+                    value: function metricFindQuery(query) {
+                        var findTransform = function findTransform(result) {
+                            return _.map(result, function (value) {
+                                return { text: value };
+                            });
+                        };
+                        // Get Metrics that start with the first argument
+                        var metricsRegex = /metrics\((.*)\)/;
+                        // Get tag keys for the given metric (first argument)
+                        var tagKeysRegex = /tagkeys\((.*)\)/;
+                        // Get tag values for the given metric (first argument) and tag key (second argument)
+                        var tagValuesRegex = /tagvalues\((.*),(.*)\)/;
+
+                        var metricsQuery = query.match(metricsRegex);
+                        if (metricsQuery) {
+                            return this.backendSrv.datasourceRequest({
+                                url: this.url + "/api/metric",
+                                method: 'GET',
+                                datasource: this
+                            }).then(function (data) {
+                                var filtered = _.filter(data.data, function (v) {
+                                    return v.startsWith(metricsQuery[1]);
+                                });
+                                return findTransform(filtered);
+                            });
+                        }
+
+                        var tagKeysQuery = query.match(tagKeysRegex);
+                        if (tagKeysQuery) {
+                            return this.backendSrv.datasourceRequest({
+                                url: this.url + "/api/tagk/" + tagKeysQuery[1],
+                                method: 'GET',
+                                datasource: this
+                            }).then(function (data) {
+                                return findTransform(data.data);
+                            });
+                        }
+
+                        var tagValuesQuery = query.match(tagValuesRegex);
+                        if (tagValuesQuery) {
+                            return this.backendSrv.datasourceRequest({
+                                url: this.url + "/api/tagv/" + tagValuesQuery[2].trim() + "/" + tagValuesQuery[1].trim(),
+                                method: 'GET',
+                                datasource: this
+                            }).then(function (data) {
+                                return findTransform(data.data);
+                            });
+                        }
+
+                        return this.q.when([]);
+                    }
+                }, {
                     key: "query",
                     value: function query(options) {
 
