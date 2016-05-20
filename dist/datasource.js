@@ -48,8 +48,8 @@ System.register(["app/core/table_model"], function (_export, _context) {
                     key: "makeTable",
                     value: function makeTable(result) {
                         var table = new TableModel();
-                        if (Object.keys(result).length < 1) {
-                            return table;
+                        if (!result || Object.keys(result).length < 1) {
+                            return [table];
                         }
                         var tagKeys = [];
                         _.each(result[0].Group, function (v, tagKey) {
