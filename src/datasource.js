@@ -1,5 +1,7 @@
 import TableModel from 'app/core/table_model';
 
+
+
 export class BosunDatasource {
     constructor(instanceSettings, $q, backendSrv, templateSrv) {
         this.type = instanceSettings.type;
@@ -85,6 +87,70 @@ export class BosunDatasource {
                 return { data: result };
             }
         });
+    }
+
+    _metricsStartWith(metricRoot) {
+        return this.backendSrv.datasourceRequest({
+            url: this.url + "/api/metric",
+            method: 'GET',
+            datasource: this
+        }).then((data) => {
+            var filtered = _.filter(data.data, (v) => {
+                return v.startsWith(metricRoot);
+            });
+            return filtered;
+        });
+    }
+
+    _tagKeysForMetric(metric) {
+        return this.backendSrv.datasourceRequest({
+            url: this.url + "/api/tagk/" + metric,
+            method: 'GET',
+            datasource: this
+        }).then((data) => {
+            return data.data;
+        });
+    }
+
+    _tagValuesForMetricAndTagKey(metric, key) {
+        return this.backendSrv.datasourceRequest({
+            url: this.url + "/api/tagv/" + key + "/" + metric,
+            method: 'GET',
+            datasource: this
+        }).then((data) => {
+            return data.data;
+        });
+    }
+
+    metricFindQuery(query) {
+        var findTransform = function (result) {
+            return _.map(result, function (value) {
+                return { text: value };
+            });
+        };
+        // Get Metrics that start with the first argument
+        var metricsRegex = /metrics\((.*)\)/;
+        // Get tag keys for the given metric (first argument)
+        var tagKeysRegex = /tagkeys\((.*)\)/;
+        // Get tag values for the given metric (first argument) and tag key (second argument)
+        var tagValuesRegex = /tagvalues\((.*),(.*)\)/;
+
+        var metricsQuery = query.match(metricsRegex)
+        if (metricsQuery) {
+            return this._metricsStartWith(metricsQuery[1]).then(findTransform);
+        }
+
+        var tagKeysQuery = query.match(tagKeysRegex)
+        if (tagKeysQuery) {
+            return this._tagKeysForMetric(tagKeysQuery[1]).then(findTransform);
+        }
+
+        var tagValuesQuery = query.match(tagValuesRegex)
+        if (tagValuesQuery) {
+            return this._tagValuesForMetricAndTagKey(tagValuesQuery[1].trim(), tagValuesQuery[2].trim()).then(findTransform);
+        }
+
+        return this.q.when([]);
     }
 
     query(options) {

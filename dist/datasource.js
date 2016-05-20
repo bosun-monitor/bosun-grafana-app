@@ -125,6 +125,74 @@ System.register(["app/core/table_model"], function (_export, _context) {
                         });
                     }
                 }, {
+                    key: "_metricsStartWith",
+                    value: function _metricsStartWith(metricRoot) {
+                        return this.backendSrv.datasourceRequest({
+                            url: this.url + "/api/metric",
+                            method: 'GET',
+                            datasource: this
+                        }).then(function (data) {
+                            var filtered = _.filter(data.data, function (v) {
+                                return v.startsWith(metricRoot);
+                            });
+                            return filtered;
+                        });
+                    }
+                }, {
+                    key: "_tagKeysForMetric",
+                    value: function _tagKeysForMetric(metric) {
+                        return this.backendSrv.datasourceRequest({
+                            url: this.url + "/api/tagk/" + metric,
+                            method: 'GET',
+                            datasource: this
+                        }).then(function (data) {
+                            return data.data;
+                        });
+                    }
+                }, {
+                    key: "_tagValuesForMetricAndTagKey",
+                    value: function _tagValuesForMetricAndTagKey(metric, key) {
+                        return this.backendSrv.datasourceRequest({
+                            url: this.url + "/api/tagv/" + key + "/" + metric,
+                            method: 'GET',
+                            datasource: this
+                        }).then(function (data) {
+                            return data.data;
+                        });
+                    }
+                }, {
+                    key: "metricFindQuery",
+                    value: function metricFindQuery(query) {
+                        var findTransform = function findTransform(result) {
+                            return _.map(result, function (value) {
+                                return { text: value };
+                            });
+                        };
+                        // Get Metrics that start with the first argument
+                        var metricsRegex = /metrics\((.*)\)/;
+                        // Get tag keys for the given metric (first argument)
+                        var tagKeysRegex = /tagkeys\((.*)\)/;
+                        // Get tag values for the given metric (first argument) and tag key (second argument)
+                        var tagValuesRegex = /tagvalues\((.*),(.*)\)/;
+
+                        var metricsQuery = query.match(metricsRegex);
+                        if (metricsQuery) {
+                            return this._metricsStartWith(metricsQuery[1]).then(findTransform);
+                        }
+
+                        var tagKeysQuery = query.match(tagKeysRegex);
+                        if (tagKeysQuery) {
+                            return this._tagKeysForMetric(tagKeysQuery[1]).then(findTransform);
+                        }
+
+                        var tagValuesQuery = query.match(tagValuesRegex);
+                        if (tagValuesQuery) {
+                            return this._tagValuesForMetricAndTagKey(tagValuesQuery[1].trim(), tagValuesQuery[2].trim()).then(findTransform);
+                        }
+
+                        return this.q.when([]);
+                    }
+                }, {
                     key: "query",
                     value: function query(options) {
 
