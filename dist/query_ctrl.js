@@ -65,21 +65,103 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
           var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(BosunDatasourceQueryCtrl).call(this, $scope, $injector));
 
           _this.scope = $scope;
+          _this.queryHelper = {};
           _this.uiSegmentSrv = uiSegmentSrv;
+          _this.target.expandHelper = 0;
           _this.target.target = _this.target.target || 'Bosun Query';
+          _this.suggestMetrics = _this.suggestMetrics.bind(_this);
+          _this.addSuggest = _this.addSuggest.bind(_this);
+          _this.labelFromUnit = _this.labelFromUnit.bind(_this);
+          _this.metricInfo = _this.metricInfo.bind(_this);
+          _this.suggestQuery = _this.suggestQuery.bind(_this);
+          _this.suggestTagValues = _this.suggestTagValues.bind(_this);
+          _this.filterTypes = ["Group By", "Filter"];
           return _this;
         }
 
         _createClass(BosunDatasourceQueryCtrl, [{
-          key: 'getOptions',
-          value: function getOptions() {
-            return this.datasource.metricFindQuery(this.target).then(this.uiSegmentSrv.transformToSegments(false));
-            // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
+          key: 'suggestMetrics',
+          value: function suggestMetrics(metric, callback) {
+            return this.datasource._metricsStartWith(metric).then(callback);
+          }
+        }, {
+          key: 'metricInfo',
+          value: function metricInfo() {
+            var _this2 = this;
+
+            return this.datasource._tagKeysForMetric(this.queryHelper.metric).then(function (tagKeys) {
+              _this2.datasource.q.all(_.map(tagKeys, function (tagKey) {
+                return _this2.datasource._tagValuesForMetricAndTagKey(_this2.queryHelper.metric, tagKey).then(function (tagValues) {
+                  return { key: tagKey, value: tagValues };
+                });
+              })).then(function (tagKeysToValues) {
+                tagKeysToValues = _.each(tagKeysToValues, function (v) {
+                  v.filterType = "Group By";
+                });
+                _this2.queryHelper.tagKeysToValues = tagKeysToValues;
+              });
+            }).then(function () {
+              return _this2.datasource._metricMetadata(_this2.queryHelper.metric).then(function (metadata) {
+                _this2.queryHelper.rate = metadata.Rate;
+                _this2.queryHelper.unit = metadata.Unit;
+                _this2.queryHelper.desc = metadata.Desc;
+              });
+            }).then(function () {
+              return _this2.suggestQuery();
+            });
+          }
+        }, {
+          key: 'suggestTagValues',
+          value: function suggestTagValues(key, callback) {
+            return this.queryHelper.tagKeysToValues[key].then(callback);
+          }
+        }, {
+          key: 'labelFromUnit',
+          value: function labelFromUnit() {
+            if (this.panelCtrl.panel.type === "graph") {
+              this.panelCtrl.panel.yaxes[0].label = this.queryHelper.unit;
+            }
+            if (this.panelCtrl.panel.type === "singlestat") {
+              this.panelCtrl.panel.postfix = " " + this.queryHelper.unit;
+            }
+          }
+        }, {
+          key: 'suggestQuery',
+          value: function suggestQuery() {
+            var _this3 = this;
+
+            var metric = this.queryHelper.metric || "metric.goes.here";
+            var selectedGroupByTags = [];
+            var selectedFilterTags = [];
+            _.each(this.queryHelper.tagKeysToValues, function (v) {
+              if (v.selectedValue && v.selectedValue != "") {
+                if (v.filterType === _this3.filterTypes[0]) {
+                  selectedGroupByTags.push(v.key + "=" + v.selectedValue);
+                }
+                if (v.filterType === _this3.filterTypes[1]) {
+                  selectedFilterTags.push(v.key + "=" + v.selectedValue);
+                }
+              }
+            }, this);
+            var rate = "";
+            if (this.queryHelper.rate && this.queryHelper.rate == "counter") {
+              rate = "rate{counter,,1}:";
+            }
+            this.queryHelper.suggestedQuery = "q(\"avg:$ds-avg:" + rate + metric + "{" + selectedGroupByTags.join(",") + "}" + "{" + selectedFilterTags.join(",") + "}" + "\", \"$start\", \"\")";
           }
         }, {
           key: 'onChangeInternal',
           value: function onChangeInternal() {
             this.panelCtrl.refresh(); // Asks the panel to refresh data.
+          }
+        }, {
+          key: 'addSuggest',
+          value: function addSuggest() {
+            if (this.target.expr) {
+              this.target.expr += "\n" + this.queryHelper.suggestedQuery;
+            } else {
+              this.target.expr = this.queryHelper.suggestedQuery;
+            }
           }
         }]);
 

@@ -1,12 +1,11 @@
 import TableModel from 'app/core/table_model';
 
-
-
 export class BosunDatasource {
     constructor(instanceSettings, $q, backendSrv, templateSrv) {
         this.type = instanceSettings.type;
         this.url = instanceSettings.url;
         this.name = instanceSettings.name;
+        this.showHelper = instanceSettings.jsonData.enableQueryHelper;
         this.q = $q;
         this.backendSrv = backendSrv;
         this.templateSrv = templateSrv;
@@ -115,6 +114,16 @@ export class BosunDatasource {
     _tagValuesForMetricAndTagKey(metric, key) {
         return this.backendSrv.datasourceRequest({
             url: this.url + "/api/tagv/" + key + "/" + metric,
+            method: 'GET',
+            datasource: this
+        }).then((data) => {
+            return data.data;
+        });
+    }
+    
+    _metricMetadata(metric) {
+        return this.backendSrv.datasourceRequest({
+            url: this.url + "/api/metadata/metrics?metric=" + metric,
             method: 'GET',
             datasource: this
         }).then((data) => {

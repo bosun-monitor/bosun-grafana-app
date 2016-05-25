@@ -29,6 +29,7 @@
     "updated": "2016-05-13"
   },
 
+
   "dependencies": {
     "grafanaVersion": "3.0.1",
     "plugins": [ ]

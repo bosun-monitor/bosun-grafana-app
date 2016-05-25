@@ -39,6 +39,7 @@ System.register(["app/core/table_model"], function (_export, _context) {
                     this.type = instanceSettings.type;
                     this.url = instanceSettings.url;
                     this.name = instanceSettings.name;
+                    this.showHelper = instanceSettings.jsonData.enableQueryHelper;
                     this.q = $q;
                     this.backendSrv = backendSrv;
                     this.templateSrv = templateSrv;
@@ -154,6 +155,17 @@ System.register(["app/core/table_model"], function (_export, _context) {
                     value: function _tagValuesForMetricAndTagKey(metric, key) {
                         return this.backendSrv.datasourceRequest({
                             url: this.url + "/api/tagv/" + key + "/" + metric,
+                            method: 'GET',
+                            datasource: this
+                        }).then(function (data) {
+                            return data.data;
+                        });
+                    }
+                }, {
+                    key: "_metricMetadata",
+                    value: function _metricMetadata(metric) {
+                        return this.backendSrv.datasourceRequest({
+                            url: this.url + "/api/metadata/metrics?metric=" + metric,
                             method: 'GET',
                             datasource: this
                         }).then(function (data) {
