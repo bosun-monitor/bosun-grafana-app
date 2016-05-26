@@ -6,3 +6,12 @@
 		<editor-checkbox text="" model="ctrl.current.jsonData.enableQueryHelper"></editor-checkbox>
 	</div>
 </div>
+
+<div class="gf-form-group">
+	<div class="gf-form max-width-30">
+		<span class="gf-form-label">Annotate URL</span>
+		<input type="text" class="gf-form-input" ng-model="ctrl.current.jsonData.annotateUrl"
+		spellcheck='false'></input>
+		<info-popover mode="right-absolute">Link to root of bosun UI for links to edit annotations. Usually the same as the datasource. To enable annotations in Bosun, you need elastic and something like the following in Bosun's configuration: annotateElasticHosts=http://ny-lselastic01.ds.stackexchange.com:9200,http://ny-lselastic02.ds.stackexchange.com:9200</info-popover>
+	</div>
+</div>

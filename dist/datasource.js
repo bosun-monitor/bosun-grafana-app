@@ -1,7 +1,7 @@
-"use strict";
+'use strict';
 
-System.register(["app/core/table_model"], function (_export, _context) {
-    var TableModel, _createClass, BosunDatasource;
+System.register(['app/core/table_model', 'moment'], function (_export, _context) {
+    var TableModel, moment, _createClass, BosunDatasource;
 
     function _classCallCheck(instance, Constructor) {
         if (!(instance instanceof Constructor)) {
@@ -12,6 +12,8 @@ System.register(["app/core/table_model"], function (_export, _context) {
     return {
         setters: [function (_appCoreTable_model) {
             TableModel = _appCoreTable_model.default;
+        }, function (_moment) {
+            moment = _moment.default;
         }],
         execute: function () {
             _createClass = function () {
@@ -32,10 +34,11 @@ System.register(["app/core/table_model"], function (_export, _context) {
                 };
             }();
 
-            _export("BosunDatasource", BosunDatasource = function () {
+            _export('BosunDatasource', BosunDatasource = function () {
                 function BosunDatasource(instanceSettings, $q, backendSrv, templateSrv) {
                     _classCallCheck(this, BosunDatasource);
 
+                    this.annotateUrl = instanceSettings.jsonData.annotateUrl;
                     this.type = instanceSettings.type;
                     this.url = instanceSettings.url;
                     this.name = instanceSettings.name;
@@ -46,7 +49,7 @@ System.register(["app/core/table_model"], function (_export, _context) {
                 }
 
                 _createClass(BosunDatasource, [{
-                    key: "makeTable",
+                    key: 'makeTable',
                     value: function makeTable(result) {
                         var table = new TableModel();
                         if (!result || Object.keys(result).length < 1) {
@@ -72,7 +75,7 @@ System.register(["app/core/table_model"], function (_export, _context) {
                         return [table];
                     }
                 }, {
-                    key: "transformMetricData",
+                    key: 'transformMetricData',
                     value: function transformMetricData(result, target, options) {
                         var tagData = [];
                         _.each(result.Group, function (v, k) {
@@ -100,7 +103,7 @@ System.register(["app/core/table_model"], function (_export, _context) {
                         return { target: metricLabel, datapoints: dps };
                     }
                 }, {
-                    key: "performTimeSeriesQuery",
+                    key: 'performTimeSeriesQuery',
                     value: function performTimeSeriesQuery(query, target, options) {
                         var exprDate = options.range.to.utc().format('YYYY-MM-DD');
                         var exprTime = options.range.to.utc().format('HH:mm:ss');
@@ -126,7 +129,7 @@ System.register(["app/core/table_model"], function (_export, _context) {
                         });
                     }
                 }, {
-                    key: "_metricsStartWith",
+                    key: '_metricsStartWith',
                     value: function _metricsStartWith(metricRoot) {
                         return this.backendSrv.datasourceRequest({
                             url: this.url + "/api/metric",
@@ -140,7 +143,7 @@ System.register(["app/core/table_model"], function (_export, _context) {
                         });
                     }
                 }, {
-                    key: "_tagKeysForMetric",
+                    key: '_tagKeysForMetric',
                     value: function _tagKeysForMetric(metric) {
                         return this.backendSrv.datasourceRequest({
                             url: this.url + "/api/tagk/" + metric,
@@ -151,7 +154,7 @@ System.register(["app/core/table_model"], function (_export, _context) {
                         });
                     }
                 }, {
-                    key: "_tagValuesForMetricAndTagKey",
+                    key: '_tagValuesForMetricAndTagKey',
                     value: function _tagValuesForMetricAndTagKey(metric, key) {
                         return this.backendSrv.datasourceRequest({
                             url: this.url + "/api/tagv/" + key + "/" + metric,
@@ -162,7 +165,7 @@ System.register(["app/core/table_model"], function (_export, _context) {
                         });
                     }
                 }, {
-                    key: "_metricMetadata",
+                    key: '_metricMetadata',
                     value: function _metricMetadata(metric) {
                         return this.backendSrv.datasourceRequest({
                             url: this.url + "/api/metadata/metrics?metric=" + metric,
@@ -173,7 +176,7 @@ System.register(["app/core/table_model"], function (_export, _context) {
                         });
                     }
                 }, {
-                    key: "metricFindQuery",
+                    key: 'metricFindQuery',
                     value: function metricFindQuery(query) {
                         var findTransform = function findTransform(result) {
                             return _.map(result, function (value) {
@@ -205,9 +208,8 @@ System.register(["app/core/table_model"], function (_export, _context) {
                         return this.q.when([]);
                     }
                 }, {
-                    key: "query",
+                    key: 'query',
                     value: function query(options) {
-
                         var queries = [];
                         // Get time values to replace $start
                         // The end time is what bosun regards as 'now'
@@ -247,7 +249,84 @@ System.register(["app/core/table_model"], function (_export, _context) {
                         });
                     }
                 }, {
-                    key: "testDatasource",
+                    key: '_processAnnotationQueryParam',
+                    value: function _processAnnotationQueryParam(annotation, fieldName, fieldObject, params) {
+                        var param = {};
+                        var key = fieldName;
+                        if (!fieldObject) {
+                            return params;
+                        }
+                        if (fieldObject.empty) {
+                            key += ":Empty";
+                        }
+                        if (fieldObject.not) {
+                            if (!fieldObject.empty) {
+                                key += ":";
+                            }
+                            key += ":Empty";
+                        }
+                        params[key] = fieldObject.value;
+                        return params;
+                    }
+                }, {
+                    key: 'annotationQuery',
+                    value: function annotationQuery(options) {
+                        var annotation = options.annotation;
+                        var params = {};
+                        params.StartDate = options.range.from.unix();
+                        params.EndDate = options.range.to.unix();
+                        params = this._processAnnotationQueryParam(annotation, "Source", annotation.Source, params);
+                        params = this._processAnnotationQueryParam(annotation, "Host", annotation.Host, params);
+                        params = this._processAnnotationQueryParam(annotation, "CreationUser", annotation.CreationUser, params);
+                        params = this._processAnnotationQueryParam(annotation, "Owner", annotation.Owner, params);
+                        params = this._processAnnotationQueryParam(annotation, "Category", annotation.Category, params);
+                        params = this._processAnnotationQueryParam(annotation, "Url", annotation.Url, params);
+                        var url = this.url + '/api/annotation/query?';
+                        if (Object.keys(params).length > 0) {
+                            url += jQuery.param(params);
+                        }
+                        var rawUrl = this.rawUrl;
+                        return this.backendSrv.datasourceRequest({
+                            url: url,
+                            method: 'GET',
+                            datasource: this
+                        }).then(function (response) {
+                            if (response.status === 200) {
+                                var events = [];
+                                _.each(response.data, function (a) {
+                                    var text = [];
+                                    if (a.Source) {
+                                        text.push("Source: " + a.Source);
+                                    }
+                                    if (a.Host) {
+                                        text.push("Host: " + a.Host);
+                                    }
+                                    if (a.CreationUser) {
+                                        text.push("User: " + a.User);
+                                    }
+                                    if (a.Owner) {
+                                        text.push("Host: " + a.Owner);
+                                    }
+                                    if (a.Url) {
+                                        text.push('<a href="' + a.Url + '">' + a.Url.substring(0, 50) + '</a>');
+                                    }
+                                    if (a.Message) {
+                                        text.push(a.Message);
+                                    }
+                                    var grafanaAnnotation = {
+                                        annotation: annotation,
+                                        time: moment(a.StartDate).utc().unix() * 1000,
+                                        title: a.Category,
+                                        text: text.join("<br>")
+                                    };
+                                    events.push(grafanaAnnotation);
+                                });
+                                return events;
+                            }
+                        });
+                    }
+                }, {
+                    key: 'testDatasource',
                     value: function testDatasource() {
                         return this.backendSrv.datasourceRequest({
                             url: this.url + '/',
@@ -263,7 +342,7 @@ System.register(["app/core/table_model"], function (_export, _context) {
                 return BosunDatasource;
             }());
 
-            _export("BosunDatasource", BosunDatasource);
+            _export('BosunDatasource', BosunDatasource);
         }
     };
 });

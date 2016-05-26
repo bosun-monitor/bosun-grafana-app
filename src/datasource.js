@@ -1,7 +1,9 @@
 import TableModel from 'app/core/table_model';
+import moment from 'moment';
 
 export class BosunDatasource {
     constructor(instanceSettings, $q, backendSrv, templateSrv) {
+        this.annotateUrl = instanceSettings.jsonData.annotateUrl;
         this.type = instanceSettings.type;
         this.url = instanceSettings.url;
         this.name = instanceSettings.name;
@@ -120,7 +122,7 @@ export class BosunDatasource {
             return data.data;
         });
     }
-    
+
     _metricMetadata(metric) {
         return this.backendSrv.datasourceRequest({
             url: this.url + "/api/metadata/metrics?metric=" + metric,
@@ -163,7 +165,6 @@ export class BosunDatasource {
     }
 
     query(options) {
-
         var queries = [];
         // Get time values to replace $start
         // The end time is what bosun regards as 'now'
@@ -202,6 +203,81 @@ export class BosunDatasource {
                 });
                 return { data: result };
             });
+    }
+
+    _processAnnotationQueryParam(annotation, fieldName, fieldObject, params) {
+        var param = {};
+        var key = fieldName;
+        if (!fieldObject) {
+            return params;
+        }
+        if (fieldObject.empty) {
+            key += ":Empty"
+        }
+        if (fieldObject.not) {
+            if (!fieldObject.empty) {
+                key += ":"
+            }
+            key += ":Empty"
+        }
+        params[key] = fieldObject.value;
+        return params
+    }
+
+    annotationQuery(options) {
+        var annotation = options.annotation;
+        var params = {};
+        params.StartDate = options.range.from.unix();
+        params.EndDate = options.range.to.unix();
+        params = this._processAnnotationQueryParam(annotation, "Source", annotation.Source, params)
+        params = this._processAnnotationQueryParam(annotation, "Host", annotation.Host, params)
+        params = this._processAnnotationQueryParam(annotation, "CreationUser", annotation.CreationUser, params)
+        params = this._processAnnotationQueryParam(annotation, "Owner", annotation.Owner, params)
+        params = this._processAnnotationQueryParam(annotation, "Category", annotation.Category, params)
+        params = this._processAnnotationQueryParam(annotation, "Url", annotation.Url, params)
+        var url = this.url + '/api/annotation/query?';
+        if (Object.keys(params).length > 0) {
+            url += jQuery.param(params);
+        }
+        var rawUrl = this.rawUrl;
+        return this.backendSrv.datasourceRequest({
+            url: url,
+            method: 'GET',
+            datasource: this
+        }).then(response => {
+            if (response.status === 200) {
+                var events = [];
+                _.each(response.data, (a) => {
+                    var text = [];
+                    if (a.Source) {
+                        text.push("Source: " + a.Source);
+                    }
+                    if (a.Host) {
+                        text.push("Host: " + a.Host);
+                    }
+                    if (a.CreationUser) {
+                        text.push("User: " + a.User);
+                    }
+                    if (a.Owner) {
+                        text.push("Host: " + a.Owner);
+                    }
+                    if (a.Url) {
+                        text.push('<a href="' + a.Url + '">' + a.Url.substring(0, 50) + '</a>');
+                    }
+                    if (a.Message) {
+                        text.push(a.Message);
+                    }
+                    var grafanaAnnotation = {
+                        annotation: annotation,
+                        time: moment(a.StartDate).utc().unix() * 1000,
+                        title: a.Category,
+                        text: text.join("<br>")
+                    }
+                    events.push(grafanaAnnotation);
+                });
+                return events;
+            }
+        });
     }
 
     // Required
