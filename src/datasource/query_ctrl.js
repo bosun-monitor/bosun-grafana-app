@@ -89,4 +89,4 @@ export class BosunDatasourceQueryCtrl extends QueryCtrl {
   }
 }
 
-BosunDatasourceQueryCtrl.templateUrl = 'partials/query.editor.html';
+BosunDatasourceQueryCtrl.templateUrl = 'datasource/partials/query.editor.html';

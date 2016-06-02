@@ -170,7 +170,7 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
 
       _export('BosunDatasourceQueryCtrl', BosunDatasourceQueryCtrl);
 
-      BosunDatasourceQueryCtrl.templateUrl = 'partials/query.editor.html';
+      BosunDatasourceQueryCtrl.templateUrl = 'datasource/partials/query.editor.html';
     }
   };
 });

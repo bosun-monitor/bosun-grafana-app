@@ -42,4 +42,3 @@ Doing that enables a helper tool that is able to generate queries using metadata
 ## External Dependencies
 
 Besides Grafana, the plugin just needs a running Bosun instance. Because Bosun doesn't have support for [CORS headers](https://en.wikipedia.org/wiki/Cross-origin_resource_sharing), it may be easier to make it work in proxy mode.
-
