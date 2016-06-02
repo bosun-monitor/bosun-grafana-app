@@ -29,6 +29,10 @@
     {
       "type": "datasource",
       "name": "Bosun"
+    },
+    {
+      "type": "panel",
+      "name": "Bosun Incident List"
     }
   ],
 
