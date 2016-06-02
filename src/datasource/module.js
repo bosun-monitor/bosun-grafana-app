@@ -2,17 +2,17 @@ import {BosunDatasource} from './datasource';
 import {BosunDatasourceQueryCtrl} from './query_ctrl';
 
 class BosunConfigCtrl { }
-BosunConfigCtrl.templateUrl = 'partials/config.html';
+BosunConfigCtrl.templateUrl = 'datasource/partials/config.html';
 
 class BosunQueryOptionsCtrl { }
-BosunQueryOptionsCtrl.templateUrl = 'partials/query.options.html';
+BosunQueryOptionsCtrl.templateUrl = 'datasource/partials/query.options.html';
 
 class BosunAnnotationsQueryCtrl {
   constructor() {
     this.showHelp = 0;
   }
 }
-BosunAnnotationsQueryCtrl.templateUrl = 'partials/annotations.editor.html'
+BosunAnnotationsQueryCtrl.templateUrl = 'datasource/partials/annotations.editor.html'
 
 export {
 BosunDatasource as Datasource,

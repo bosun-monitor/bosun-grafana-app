@@ -1,0 +1,18 @@
+{
+  "name": "Bosun",
+  "id": "bosun-datasource",
+  "type": "datasource",
+
+
+
+  "metrics": true,
+  "annotations": true,
+
+  "info": {
+    "description": "Bosun datasource",
+    "author": {
+      "name": "Bosun Team",
+      "url": "http://bosun.org"
+    }
+  }
+}

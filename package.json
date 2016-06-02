@@ -1,11 +1,11 @@
 {
-  "name": "bosun-datasource",
+  "name": "bosun-app",
   "private": true,
   "version": "0.0.7",
   "description": "",
   "repository": {
     "type": "git",
-    "url": "git@github.com:bosun-monitor/bosun-grafana-datasource.git"
+    "url": "git@github.com:bosun-monitor/bosun-grafana-app.git"
   },
   "devDependencies": {
     "babel": "~6.5.1",

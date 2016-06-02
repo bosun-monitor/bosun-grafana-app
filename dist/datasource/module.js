@@ -20,13 +20,13 @@ System.register(['./datasource', './query_ctrl'], function (_export, _context) {
         _classCallCheck(this, BosunConfigCtrl);
       });
 
-      BosunConfigCtrl.templateUrl = 'partials/config.html';
+      BosunConfigCtrl.templateUrl = 'datasource/partials/config.html';
 
       _export('QueryOptionsCtrl', BosunQueryOptionsCtrl = function BosunQueryOptionsCtrl() {
         _classCallCheck(this, BosunQueryOptionsCtrl);
       });
 
-      BosunQueryOptionsCtrl.templateUrl = 'partials/query.options.html';
+      BosunQueryOptionsCtrl.templateUrl = 'datasource/partials/query.options.html';
 
       _export('AnnotationsQueryCtrl', BosunAnnotationsQueryCtrl = function BosunAnnotationsQueryCtrl() {
         _classCallCheck(this, BosunAnnotationsQueryCtrl);
@@ -34,7 +34,7 @@ System.register(['./datasource', './query_ctrl'], function (_export, _context) {
         this.showHelp = 0;
       });
 
-      BosunAnnotationsQueryCtrl.templateUrl = 'partials/annotations.editor.html';
+      BosunAnnotationsQueryCtrl.templateUrl = 'datasource/partials/annotations.editor.html';
 
       _export('Datasource', BosunDatasource);
 
