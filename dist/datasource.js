@@ -302,7 +302,7 @@ System.register(['app/core/table_model', 'moment'], function (_export, _context)
                                         text.push("Host: " + a.Host);
                                     }
                                     if (a.CreationUser) {
-                                        text.push("User: " + a.User);
+                                        text.push("User: " + a.CreationUser);
                                     }
                                     if (a.Owner) {
                                         text.push("Host: " + a.Owner);
