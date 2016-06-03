@@ -35,7 +35,7 @@ System.register(['app/core/table_model', 'moment'], function (_export, _context)
             }();
 
             _export('BosunDatasource', BosunDatasource = function () {
-                function BosunDatasource(instanceSettings, $q, backendSrv, templateSrv) {
+                function BosunDatasource(instanceSettings, $q, backendSrv, templateSrv, $sce) {
                     _classCallCheck(this, BosunDatasource);
 
                     this.annotateUrl = instanceSettings.jsonData.annotateUrl;
@@ -46,6 +46,7 @@ System.register(['app/core/table_model', 'moment'], function (_export, _context)
                     this.q = $q;
                     this.backendSrv = backendSrv;
                     this.templateSrv = templateSrv;
+                    this.sce = $sce;
                 }
 
                 _createClass(BosunDatasource, [{
@@ -334,6 +335,20 @@ System.register(['app/core/table_model', 'moment'], function (_export, _context)
                         }).then(function (response) {
                             if (response.status === 200) {
                                 return response.data;
+                            }
+                        });
+                    }
+                }, {
+                    key: 'AlertBodyHTML',
+                    value: function AlertBodyHTML(alertKey) {
+                        var _this = this;
+
+                        return this.backendSrv.datasourceRequest({
+                            url: this.url + '/api/status?ak=' + encodeURIComponent(alertKey),
+                            method: 'GET'
+                        }).then(function (response) {
+                            if (response.status === 200) {
+                                return _this.sce.trustAsHtml(response.data[alertKey].Body);
                             }
                         });
                     }

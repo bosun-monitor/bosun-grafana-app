@@ -2,7 +2,7 @@ import TableModel from 'app/core/table_model';
 import moment from 'moment';
 
 export class BosunDatasource {
-    constructor(instanceSettings, $q, backendSrv, templateSrv) {
+    constructor(instanceSettings, $q, backendSrv, templateSrv, $sce) {
         this.annotateUrl = instanceSettings.jsonData.annotateUrl;
         this.type = instanceSettings.type;
         this.url = instanceSettings.url;
@@ -11,6 +11,7 @@ export class BosunDatasource {
         this.q = $q;
         this.backendSrv = backendSrv;
         this.templateSrv = templateSrv;
+        this.sce = $sce;
     }
 
     makeTable(result) {
@@ -287,6 +288,17 @@ export class BosunDatasource {
         }).then(response => {
             if (response.status === 200) {
                 return response.data;
+            }
+        })
+    }
+    
+   AlertBodyHTML(alertKey) {
+        return this.backendSrv.datasourceRequest({
+            url: this.url + '/api/status?ak=' + encodeURIComponent(alertKey),
+            method: 'GET'
+        }).then(response => {
+            if (response.status === 200) {
+                return this.sce.trustAsHtml(response.data[alertKey].Body);
             }
         })
     }

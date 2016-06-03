@@ -1,26 +1,53 @@
+<style>
+td {
+    vertical-align: top;
+}
+</style>
 <div>
-    <div style="overflow-y: auto; max-height:300px">
-        <table class="table-panel-table">
+    <div style="overflow-y: auto; max-height:600px">
+        <table class="table-panel-table" style="vertical-align:top">
             <thead>
                 <tr>
                     <th>Subject</th>
-                    <th ng-click="ctrl.sortIncidents('AlertName')">Alert Name</th>
                     <th ng-click="ctrl.sortIncidentsByStatus('CurrentStatus')">Current Status</th>
                     <th ng-click="ctrl.sortIncidentsByStatus('WorstStatus')">Worst Status</th>
-                    <th>Silenced</th>
                     <th>Actions</th>
+                    <th>Expand Details</th>
                 </tr>
             </thead>
             <tbody>
                 <tr ng-repeat="i in ctrl.incidentList">
-                    <td><a ng-href="{{i.incidentLink}}" target="_blank" ng-bind="i.Subject" ng-class="ctrl.statusClass('text-', i.CurrentStatus)"></a></td>
-                    <td><a ng-href="{{i.incidentLink}}" ng-bind="i.AlertName + i.TagsString" target="_blank" ng-class="ctrl.statusClass('text-', i.CurrentStatus)"></a></td>
+                    <td>
+                        <a ng-href="{{i.incidentLink}}" target="_blank" ng-bind="i.Subject" ng-class="ctrl.statusClass('text-', i.CurrentStatus)"></a>
+                        <table ng-if="i.showActions">
+                            <tr ng-repeat="a in i.Actions">
+                                <td ng-bind="a.User"></td>
+                                <td ng-bind="a.Type"></td>
+                                <td ng-bind="a.Message"></td>
+                            </tr>
+                        </table>
+                        <table ng-if="i.showEvents">
+                            <tr ng-repeat="e in i.Events">
+                                <td ng-bind="e.Time"></td>
+                                <td ng-bind="e.Status"></td>
+                            </tr>
+                        </table>
+                        <div>
+                            <div ng-if="i.showBody" ng-bind-html="i.bodyHTML"></div>
+                        </div>
+                        
+                    </td>
                     <td ng-bind="i.CurrentStatus" ng-class="ctrl.statusClass('text-', i.CurrentStatus)"></td>
                     <td ng-bind="i.WorstStatus" ng-class="ctrl.statusClass('text-', i.WorstStatus)"></td>
-                    <td ng-bind="i.Silenced"></td>
                     <td>
-                       <button class="btn btn-primary btn-small" ng-href="{{i.ackLink}}" target="_blank">Ack </button>
-                       <button class="btn btn-small" ng-href="{{i.closeLink}}" target="_blank">Close </button>
+                       <a ng-class="{'disabled': !i.NeedAck}" class="btn btn-inverse btn-small" ng-href="{{i.ackLink}}" target="_blank">Ack </a>
+                       <a ng-class="{'disabled': i.CurrentStatus != 'normal'}" class="btn btn-inverse btn-small" ng-href="{{i.closeLink}}" target="_blank">Close </a>
+                       <a ng-class="{'disabled': i.CurrentStatus != 'unknown'}" class="btn btn-inverse btn-small" ng-href="{{i.forgetLink}}" target="_blank">Forget </a>
+                    </td>
+                    <td>
+                        <a class="btn btn-inverse btn-small" ng-click="ctrl.showActions(i)">Actions</a>
+                        <a class="btn btn-inverse btn-small" ng-click="ctrl.showBody(i)">Body</a>
+                        <a class="btn btn-inverse btn-small" ng-click="ctrl.showEvents(i)">Events</a>
                     </td>
                 </tr>
             </tbody>

@@ -126,6 +126,8 @@ System.register(['lodash', 'app/plugins/sdk', './editor'], function (_export, _c
                                     item.incidentLink = datasource.annotateUrl + "/incident?id=" + item.Id;
                                     item.ackLink = datasource.annotateUrl + "/action?type=ack&key=" + encodeURIComponent(item.AlertName + item.TagsString);
                                     item.closeLink = datasource.annotateUrl + "/action?type=close&key=" + encodeURIComponent(item.AlertName + item.TagsString);
+                                    item.forgetLink = datasource.annotateUrl + "/action?type=forget&key=" + encodeURIComponent(item.AlertName + item.TagsString);
+                                    item.bodyHTML = "";
                                     return item;
                                 });
                                 that.incidentList = data;
@@ -147,6 +149,26 @@ System.register(['lodash', 'app/plugins/sdk', './editor'], function (_export, _c
                             default:
                                 return prefix + "error";
                         }
+                    }
+                }, {
+                    key: 'showActions',
+                    value: function showActions(incident) {
+                        incident.showActions = !incident.showActions;
+                    }
+                }, {
+                    key: 'showEvents',
+                    value: function showEvents(incident) {
+                        incident.showEvents = !incident.showEvents;
+                    }
+                }, {
+                    key: 'showBody',
+                    value: function showBody(incident) {
+                        this.datasourceSrv.get(this.panel.datasource).then(function (datasource) {
+                            datasource.AlertBodyHTML(incident.AlertName + incident.TagsString).then(function (data) {
+                                incident.bodyHTML = data;
+                                incident.showBody = !incident.showBody;
+                            });
+                        });
                     }
                 }]);
 

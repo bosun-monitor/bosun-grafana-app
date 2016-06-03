@@ -54,13 +54,15 @@ export class BosunIncidentListCtrl extends MetricsPanelCtrl {
                         item.incidentLink = datasource.annotateUrl + "/incident?id=" + item.Id;
                         item.ackLink = datasource.annotateUrl + "/action?type=ack&key=" + encodeURIComponent(item.AlertName + item.TagsString);
                         item.closeLink = datasource.annotateUrl + "/action?type=close&key=" + encodeURIComponent(item.AlertName + item.TagsString);
+                        item.forgetLink = datasource.annotateUrl + "/action?type=forget&key=" + encodeURIComponent(item.AlertName + item.TagsString);
+                        item.bodyHTML = "";
                         return item;
                     })
                     that.incidentList = data;
                 })
             });
     }
-    
+
     statusClass(prefix, status) {
         switch (status) {
             case "critical": return prefix + "error";
@@ -70,6 +72,24 @@ export class BosunIncidentListCtrl extends MetricsPanelCtrl {
             default: return prefix + "error";
         }
     };
+
+    showActions(incident) {
+        incident.showActions = !incident.showActions;
+    }
+    
+    showEvents(incident) {
+        incident.showEvents = !incident.showEvents;
+    }
+
+    showBody(incident) {
+        this.datasourceSrv.get(this.panel.datasource).
+            then(datasource => {
+                datasource.AlertBodyHTML(incident.AlertName + incident.TagsString).then(data => {
+                    incident.bodyHTML = data;
+                    incident.showBody = !incident.showBody;
+                })
+            });
+    }
 }
 
 BosunIncidentListCtrl.templateUrl = 'panels/incident-list/module.html';
