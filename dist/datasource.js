@@ -221,7 +221,7 @@ System.register(['app/core/table_model', 'moment'], function (_export, _context)
                             }
                             var query = {};
 
-                            query = this.templateSrv.replace(target.expr, options.scopedVars);
+                            query = this.templateSrv.replace(target.expr, options.scopedVars, 'pipe');
                             query = query.replace(/\$start/g, secondsAgo);
                             query = query.replace(/\$ds/g, options.interval);
                             queries.push(query);
