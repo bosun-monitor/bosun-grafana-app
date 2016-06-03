@@ -1,1 +1,29 @@
-<h2 class="example-app-heading">Bosun Panel</h2>
+<div>
+    <div style="overflow-y: auto; max-height:300px">
+        <table class="table-panel-table">
+            <thead>
+                <tr>
+                    <th>Subject</th>
+                    <th ng-click="ctrl.sortIncidents('AlertName')">Alert Name</th>
+                    <th ng-click="ctrl.sortIncidentsByStatus('CurrentStatus')">Current Status</th>
+                    <th ng-click="ctrl.sortIncidentsByStatus('WorstStatus')">Worst Status</th>
+                    <th>Silenced</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="i in ctrl.incidentList">
+                    <td><a ng-href="{{i.incidentLink}}" target="_blank" ng-bind="i.Subject" ng-class="ctrl.statusClass('text-', i.CurrentStatus)"></a></td>
+                    <td><a ng-href="{{i.incidentLink}}" ng-bind="i.AlertName + i.TagsString" target="_blank" ng-class="ctrl.statusClass('text-', i.CurrentStatus)"></a></td>
+                    <td ng-bind="i.CurrentStatus" ng-class="ctrl.statusClass('text-', i.CurrentStatus)"></td>
+                    <td ng-bind="i.WorstStatus" ng-class="ctrl.statusClass('text-', i.WorstStatus)"></td>
+                    <td ng-bind="i.Silenced"></td>
+                    <td>
+                       <button class="btn btn-primary btn-small" ng-href="{{i.ackLink}}" target="_blank">Ack </button>
+                       <button class="btn btn-small" ng-href="{{i.closeLink}}" target="_blank">Close </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

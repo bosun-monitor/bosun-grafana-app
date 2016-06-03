@@ -279,6 +279,17 @@ export class BosunDatasource {
             }
         });
     }
+    
+    IncidentListQuery(query) {
+        return this.backendSrv.datasourceRequest({
+            url: this.url + '/api/incidents/open?filter=' + encodeURIComponent(query),
+            method: 'GET'
+        }).then(response => {
+            if (response.status === 200) {
+                return response.data;
+            }
+        })
+    }
 
     // Required
     // Used for testing datasource in datasource configuration pange

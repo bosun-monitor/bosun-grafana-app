@@ -2,13 +2,21 @@ import _ from 'lodash';
 import {MetricsPanelCtrl} from 'app/plugins/sdk';
 import {bosunIncidentListPanelEditor} from './editor';
 
+var statusMap = {
+    "normal": 0,
+    "warning": 1,
+    "critical": 2,
+    "unknown": 3
+}
+
 export class BosunIncidentListCtrl extends MetricsPanelCtrl {
     constructor($scope, $injector, $rootScope, datasourceSrv, templateSrv) {
         super($scope, $injector);
         this.datasourceSrv = datasourceSrv;
         this.templateSrv = templateSrv;
-
+        this.linkUrl = "";
         this.incidentList = [];
+        //debugger;
         this.refreshData();
     }
 
@@ -26,11 +34,42 @@ export class BosunIncidentListCtrl extends MetricsPanelCtrl {
         this.refreshData();
     }
 
-    refreshData() {
-        return this.datasourceSrv.get(this.panel.datasource).then(() => {
-            this.incidentList = ["foo"];
-        });
+    sortIncidents(property) {
+        this.incidentList = _.sortBy(this.incidentList, property)
     }
+
+    sortIncidentsByStatus(property) {
+        this.incidentList = _.sortBy(this.incidentList, (incident) => {
+            return statusMap[incident[property]];
+        }).reverse();
+    }
+
+    refreshData() {
+        var query = this.panel.query;
+        var that = this;
+        return this.datasourceSrv.get(this.panel.datasource)
+            .then(datasource => {
+                datasource.IncidentListQuery(query).then((data) => {
+                    data = _.each(data, (item) => {
+                        item.incidentLink = datasource.annotateUrl + "/incident?id=" + item.Id;
+                        item.ackLink = datasource.annotateUrl + "/action?type=ack&key=" + encodeURIComponent(item.AlertName + item.TagsString);
+                        item.closeLink = datasource.annotateUrl + "/action?type=close&key=" + encodeURIComponent(item.AlertName + item.TagsString);
+                        return item;
+                    })
+                    that.incidentList = data;
+                })
+            });
+    }
+    
+    statusClass(prefix, status) {
+        switch (status) {
+            case "critical": return prefix + "error";
+            case "unknown": return prefix + "info";
+            case "warning": return prefix + "warning";
+            case "normal": return prefix + "success";
+            default: return prefix + "error";
+        }
+    };
 }
 
 BosunIncidentListCtrl.templateUrl = 'panels/incident-list/module.html';

@@ -326,6 +326,18 @@ System.register(['app/core/table_model', 'moment'], function (_export, _context)
                         });
                     }
                 }, {
+                    key: 'IncidentListQuery',
+                    value: function IncidentListQuery(query) {
+                        return this.backendSrv.datasourceRequest({
+                            url: this.url + '/api/incidents/open?filter=' + encodeURIComponent(query),
+                            method: 'GET'
+                        }).then(function (response) {
+                            if (response.status === 200) {
+                                return response.data;
+                            }
+                        });
+                    }
+                }, {
                     key: 'testDatasource',
                     value: function testDatasource() {
                         return this.backendSrv.datasourceRequest({

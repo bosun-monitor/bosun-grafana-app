@@ -1,7 +1,7 @@
-"use strict";
+'use strict';
 
 System.register([], function (_export, _context) {
-    var BosunIncidentListPanelEditor;
+    var BosunIncidentListPanelEditorCtrl;
 
     function _classCallCheck(instance, Constructor) {
         if (!(instance instanceof Constructor)) {
@@ -12,9 +12,28 @@ System.register([], function (_export, _context) {
     return {
         setters: [],
         execute: function () {
-            BosunIncidentListPanelEditor = function BosunIncidentListPanelEditor() {
-                _classCallCheck(this, BosunIncidentListPanelEditor);
+            BosunIncidentListPanelEditorCtrl = function BosunIncidentListPanelEditorCtrl($scope, $rootScope, $q, uiSegmentSrv, datasourceSrv, templateSrv) {
+                _classCallCheck(this, BosunIncidentListPanelEditorCtrl);
+
+                $scope.editor = this;
+                this.panelCtrl = $scope.ctrl;
+                this.panel = this.panelCtrl.panel;
+
+                this.$q = $q;
+                this.datasourceSrv = datasourceSrv;
+                this.templateSrv = templateSrv;
             };
+
+            function bosunIncidentListPanelEditor() {
+                return {
+                    restrict: 'E',
+                    scope: true,
+                    templateUrl: 'public/plugins/bosun-app/panels/incident-list/editor.html',
+                    controller: BosunIncidentListPanelEditorCtrl
+                };
+            }
+
+            _export('bosunIncidentListPanelEditor', bosunIncidentListPanelEditor);
         }
     };
 });

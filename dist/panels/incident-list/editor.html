@@ -1,0 +1,11 @@
+<editor-row query-ctrl="ctrl">
+    <div class="gf-form-inline" style="align-items:flex-start;">
+        <div class="gf-form" style="width:80%;align-items:flex-start;">
+            <label class="gf-form-label query-keyword">
+                Query:
+            </label>
+            <input type="text" class="gf-form-input" ng-model="editor.panel.query" spellcheck='false' placeholder="incident query" data-min-length=0
+                data-items=100 ng-blur="editor.panelCtrl.refreshData()"></input>
+        </div>
+   </div>
+</editor-row>
