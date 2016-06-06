@@ -353,6 +353,20 @@ System.register(['app/core/table_model', 'moment'], function (_export, _context)
                         });
                     }
                 }, {
+                    key: 'submitAction',
+                    value: function submitAction(actionObj) {
+                        return this.backendSrv.datasourceRequest({
+                            url: this.url + '/api/action',
+                            method: 'POST',
+                            data: actionObj,
+                            datasource: this
+                        }).then(function (response) {
+                            if (response.status === 200) {
+                                return "";
+                            }
+                        });
+                    }
+                }, {
                     key: 'testDatasource',
                     value: function testDatasource() {
                         return this.backendSrv.datasourceRequest({

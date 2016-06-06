@@ -19,9 +19,10 @@ export class BosunIncidentListCtrl extends MetricsPanelCtrl {
         this.linkUrl = "";
         this.incidentList = [];
         //debugger;
+        this.refreshData = this.refreshData.bind(this);
         this.refreshData();
         this.utilSrv = utilSrv;
-        this.bodyHTML = ""
+        this.bodyHTML = "";
     }
 
     onInitMetricsPanelEditMode() {
@@ -56,9 +57,6 @@ export class BosunIncidentListCtrl extends MetricsPanelCtrl {
                 datasource.IncidentListQuery(query).then((data) => {
                     data = _.each(data, (item) => {
                         item.incidentLink = datasource.annotateUrl + "/incident?id=" + item.Id;
-                        item.ackLink = datasource.annotateUrl + "/action?type=ack&key=" + encodeURIComponent(item.AlertName + item.TagsString);
-                        item.closeLink = datasource.annotateUrl + "/action?type=close&key=" + encodeURIComponent(item.AlertName + item.TagsString);
-                        item.forgetLink = datasource.annotateUrl + "/action?type=forget&key=" + encodeURIComponent(item.AlertName + item.TagsString);
                         item.bodyHTML = "";
                         return item;
                     })
@@ -99,6 +97,41 @@ export class BosunIncidentListCtrl extends MetricsPanelCtrl {
             scope: modalScope
         });
     }
+
+    // incidents can be an incident, but also an [] of incidents    
+    showActionForm(incidents, action) {
+        if (!Array.isArray(incidents)) {
+            incidents = [incidents]
+        }
+        var modalScope = this.$scope.$new();
+        modalScope.incidents = incidents;
+        modalScope.action = action;
+        this.utilSrv.showModal(event, {
+            src: "public/plugins/bosun-app/panels/incident-list/modal_action.html",
+            scope: modalScope
+        });
+    }
+
+    submitActionForm(incidents, action) {
+        var self = this;
+        var actionForm = this.actionForm;
+        var actionRequest = {
+            Type: action,
+            User: actionForm.User,
+            Message: actionForm.Message,
+            Notify: actionForm.Notify == true,
+        }
+        actionRequest.Keys = _.map(incidents, (incident) => {
+            return incident.AlertName + incident.TagsString;
+        });
+        this.datasourceSrv.get(this.panel.datasource).
+            then(datasource => {
+                datasource.submitAction(actionRequest).then(() => 
+                    self.refreshData().then()
+                )
+            })
+    }
+
 
     showBody(incident) {
         this.datasourceSrv.get(this.panel.datasource).

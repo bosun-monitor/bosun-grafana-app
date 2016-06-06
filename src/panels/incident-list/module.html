@@ -24,9 +24,9 @@
                     <td ng-bind="i.CurrentStatus" ng-class="ctrl.statusClass('text-', i.CurrentStatus)"></td>
                     <td ng-bind="i.WorstStatus" ng-class="ctrl.statusClass('text-', i.WorstStatus)"></td>
                     <td>
-                        <a ng-class="{'disabled': !i.NeedAck}" class="btn btn-inverse btn-small" ng-href="{{i.ackLink}}" target="_blank">Ack </a>
-                        <a ng-class="{'disabled': i.CurrentStatus != 'normal'}" class="btn btn-inverse btn-small" ng-href="{{i.closeLink}}" target="_blank">Close </a>
-                        <a ng-class="{'disabled': i.CurrentStatus != 'unknown'}" class="btn btn-inverse btn-small" ng-href="{{i.forgetLink}}" target="_blank">Forget </a>
+                        <a ng-class="{'disabled': !i.NeedAck}" class="btn btn-inverse btn-small" ng-click="ctrl.showActionForm(i, 'ack')" target="_blank">Ack </a>
+                        <a ng-class="{'disabled': i.CurrentStatus != 'normal'}" class="btn btn-inverse btn-small" ng-click="ctrl.showActionForm(i, 'close')" target="_blank">Close </a>
+                        <a ng-class="{'disabled': i.CurrentStatus != 'unknown'}" class="btn btn-inverse btn-small" ng-click="ctrl.showActionForm(i, 'forget')" target="_blank">Forget </a>
                     </td>
                     <td>
                         <a class="btn btn-inverse btn-small" ng-click="ctrl.showActions(i)">Actions</a>

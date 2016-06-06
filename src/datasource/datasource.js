@@ -280,7 +280,7 @@ export class BosunDatasource {
             }
         });
     }
-    
+
     IncidentListQuery(query) {
         return this.backendSrv.datasourceRequest({
             url: this.url + '/api/incidents/open?filter=' + encodeURIComponent(query),
@@ -291,14 +291,27 @@ export class BosunDatasource {
             }
         })
     }
-    
-   AlertBodyHTML(alertKey) {
+
+    AlertBodyHTML(alertKey) {
         return this.backendSrv.datasourceRequest({
             url: this.url + '/api/status?ak=' + encodeURIComponent(alertKey),
             method: 'GET'
         }).then(response => {
             if (response.status === 200) {
                 return this.sce.trustAsHtml(response.data[alertKey].Body);
+            }
+        })
+    }
+
+    submitAction(actionObj) {
+        return this.backendSrv.datasourceRequest({
+            url: this.url + '/api/action',
+            method: 'POST',
+            data: actionObj,
+            datasource: this
+        }).then(response => {
+            if (response.status === 200) {
+                return ""
             }
         })
     }
