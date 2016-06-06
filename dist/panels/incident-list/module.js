@@ -79,13 +79,13 @@ System.register(['lodash', 'moment', 'app/plugins/sdk', './editor'], function (_
 
                     _this.datasourceSrv = datasourceSrv;
                     _this.templateSrv = templateSrv;
+                    _this.$rootScope = $rootScope;
                     _this.linkUrl = "";
                     _this.incidentList = [];
                     //debugger;
                     _this.refreshData();
                     _this.utilSrv = utilSrv;
                     _this.bodyHTML = "";
-                    //this.utilSrv.init();
                     return _this;
                 }
 
@@ -142,15 +142,8 @@ System.register(['lodash', 'moment', 'app/plugins/sdk', './editor'], function (_
                 }, {
                     key: 'fmtTime',
                     value: function fmtTime(unixTS) {
-                        return moment.unix(unixTS).format('YYYY-MM-DD HH:mm:ss');
-                    }
-                }, {
-                    key: 'modalTest',
-                    value: function modalTest() {
-                        //var modalScope = this.$scope.$new(true);
-                        //modalScope.plugin = this.model;
-                        // thi
-                        this.utilSrv.showModal(event, { src: "public/plugins/bosun-app/panels/incident-list/modal.html", scope: this.$scope.$new() });
+                        var m = moment.unix(unixTS);
+                        return m.format('YYYY-MM-DD HH:mm:ss') + ' (' + m.fromNow() + ')';
                     }
                 }, {
                     key: 'statusClass',
@@ -171,12 +164,22 @@ System.register(['lodash', 'moment', 'app/plugins/sdk', './editor'], function (_
                 }, {
                     key: 'showActions',
                     value: function showActions(incident) {
-                        incident.showActions = !incident.showActions;
+                        var modalScope = this.$scope.$new();
+                        modalScope.actions = incident.Actions;
+                        this.utilSrv.showModal(event, {
+                            src: "public/plugins/bosun-app/panels/incident-list/modal_actions.html",
+                            scope: modalScope
+                        });
                     }
                 }, {
                     key: 'showEvents',
                     value: function showEvents(incident) {
-                        incident.showEvents = !incident.showEvents;
+                        var modalScope = this.$scope.$new();
+                        modalScope.events = incident.Events.reverse();
+                        this.utilSrv.showModal(event, {
+                            src: "public/plugins/bosun-app/panels/incident-list/modal_events.html",
+                            scope: modalScope
+                        });
                     }
                 }, {
                     key: 'showBody',
@@ -185,9 +188,12 @@ System.register(['lodash', 'moment', 'app/plugins/sdk', './editor'], function (_
 
                         this.datasourceSrv.get(this.panel.datasource).then(function (datasource) {
                             datasource.AlertBodyHTML(incident.AlertName + incident.TagsString).then(function (data) {
-                                console.log(_this2);
-                                _this2.bodyHTML = data;
-                                _this2.utilSrv.showModal(event, { src: "public/plugins/bosun-app/panels/incident-list/modal.html", scope: _this2.$scope.$new() });
+                                var modalScope = _this2.$rootScope.$new();
+                                modalScope.bodyHTML = data;
+                                _this2.utilSrv.showModal(event, {
+                                    src: "public/plugins/bosun-app/panels/incident-list/modal_body.html",
+                                    scope: modalScope
+                                });
                             });
                         });
                     }

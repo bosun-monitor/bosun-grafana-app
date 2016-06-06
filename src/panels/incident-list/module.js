@@ -15,13 +15,13 @@ export class BosunIncidentListCtrl extends MetricsPanelCtrl {
         super($scope, $injector);
         this.datasourceSrv = datasourceSrv;
         this.templateSrv = templateSrv;
+        this.$rootScope = $rootScope;
         this.linkUrl = "";
         this.incidentList = [];
         //debugger;
         this.refreshData();
         this.utilSrv = utilSrv;
         this.bodyHTML = ""
-        //this.utilSrv.init();
     }
 
     onInitMetricsPanelEditMode() {
@@ -66,16 +66,10 @@ export class BosunIncidentListCtrl extends MetricsPanelCtrl {
                 })
             });
     }
-    
+
     fmtTime(unixTS) {
-        return moment.unix(unixTS).format('YYYY-MM-DD HH:mm:ss');
-    }
-    
-    modalTest() {
-        //var modalScope = this.$scope.$new(true);
-        //modalScope.plugin = this.model;
-        // thi
-        this.utilSrv.showModal(event, {src: "public/plugins/bosun-app/panels/incident-list/modal.html", scope:  this.$scope.$new()})
+        var m = moment.unix(unixTS);
+        return m.format('YYYY-MM-DD HH:mm:ss') + ' (' + m.fromNow() + ')';
     }
 
     statusClass(prefix, status) {
@@ -89,20 +83,33 @@ export class BosunIncidentListCtrl extends MetricsPanelCtrl {
     };
 
     showActions(incident) {
-        incident.showActions = !incident.showActions;
+        var modalScope = this.$scope.$new();
+        modalScope.actions = incident.Actions;
+        this.utilSrv.showModal(event, {
+            src: "public/plugins/bosun-app/panels/incident-list/modal_actions.html",
+            scope: modalScope
+        });
     }
-    
+
     showEvents(incident) {
-        incident.showEvents = !incident.showEvents;
+        var modalScope = this.$scope.$new();
+        modalScope.events = incident.Events.reverse();
+        this.utilSrv.showModal(event, {
+            src: "public/plugins/bosun-app/panels/incident-list/modal_events.html",
+            scope: modalScope
+        });
     }
 
     showBody(incident) {
         this.datasourceSrv.get(this.panel.datasource).
             then(datasource => {
                 datasource.AlertBodyHTML(incident.AlertName + incident.TagsString).then(data => {
-                    console.log(this)
-                    this.bodyHTML = data;
-                    this.utilSrv.showModal(event, {src: "public/plugins/bosun-app/panels/incident-list/modal.html", scope:  this.$scope.$new()})
+                    var modalScope = this.$rootScope.$new();
+                    modalScope.bodyHTML = data;
+                    this.utilSrv.showModal(event, {
+                        src: "public/plugins/bosun-app/panels/incident-list/modal_body.html",
+                        scope: modalScope
+                    });
                 })
             });
     }

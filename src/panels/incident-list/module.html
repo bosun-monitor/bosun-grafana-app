@@ -12,31 +12,14 @@
                     <th ng-click="ctrl.sortIncidentsByStatus('CurrentStatus')">Current Status</th>
                     <th ng-click="ctrl.sortIncidentsByStatus('WorstStatus')">Worst Status</th>
                     <th>Actions</th>
-                    <th>Expand Details</th>
+                    <th>Show Details</th>
                 </tr>
             </thead>
             <tbody>
                 <tr ng-repeat="i in ctrl.incidentList">
                     <td>
                         <a ng-href="{{i.incidentLink}}" target="_blank" ng-bind="i.Subject"></a>
-                        <table ng-if="i.showActions">
-                            <tr ng-repeat="a in i.Actions">
-                                <td ng-bind="ctrl.fmtTime(a.Time)"></td>
-                                <td ng-bind="a.User"></td>
-                                <td ng-bind="a.Type"></td>
-                                <td ng-bind="a.Message"></td>
-                            </tr>
-                        </table>
-                        <table ng-if="i.showEvents">
-                            <tr ng-repeat="e in i.Events">
-                                    <td ng-bind="ctrl.fmtTime(e.Time)" ng-class="ctrl.statusClass('text-', e.Status)"></td>
-                                    <td ng-bind="e.Status" ng-class="ctrl.statusClass('text-', e.Status)"></td>
-                            </tr>
-                        </table>
-                        <div>
-                            <div ng-if="i.showBody" ng-bind-html="i.bodyHTML"></div>
-                        </div>
-
+                        
                     </td>
                     <td ng-bind="i.CurrentStatus" ng-class="ctrl.statusClass('text-', i.CurrentStatus)"></td>
                     <td ng-bind="i.WorstStatus" ng-class="ctrl.statusClass('text-', i.WorstStatus)"></td>
