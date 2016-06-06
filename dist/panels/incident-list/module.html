@@ -1,7 +1,7 @@
 <style>
-td {
-    vertical-align: top;
-}
+    td {
+        vertical-align: top;
+    }
 </style>
 <div>
     <div style="overflow-y: auto; max-height:600px">
@@ -18,9 +18,10 @@ td {
             <tbody>
                 <tr ng-repeat="i in ctrl.incidentList">
                     <td>
-                        <a ng-href="{{i.incidentLink}}" target="_blank" ng-bind="i.Subject" ng-class="ctrl.statusClass('text-', i.CurrentStatus)"></a>
+                        <a ng-href="{{i.incidentLink}}" target="_blank" ng-bind="i.Subject"></a>
                         <table ng-if="i.showActions">
                             <tr ng-repeat="a in i.Actions">
+                                <td ng-bind="ctrl.fmtTime(a.Time)"></td>
                                 <td ng-bind="a.User"></td>
                                 <td ng-bind="a.Type"></td>
                                 <td ng-bind="a.Message"></td>
@@ -28,21 +29,21 @@ td {
                         </table>
                         <table ng-if="i.showEvents">
                             <tr ng-repeat="e in i.Events">
-                                <td ng-bind="e.Time"></td>
-                                <td ng-bind="e.Status"></td>
+                                    <td ng-bind="ctrl.fmtTime(e.Time)" ng-class="ctrl.statusClass('text-', e.Status)"></td>
+                                    <td ng-bind="e.Status" ng-class="ctrl.statusClass('text-', e.Status)"></td>
                             </tr>
                         </table>
                         <div>
                             <div ng-if="i.showBody" ng-bind-html="i.bodyHTML"></div>
                         </div>
-                        
+
                     </td>
                     <td ng-bind="i.CurrentStatus" ng-class="ctrl.statusClass('text-', i.CurrentStatus)"></td>
                     <td ng-bind="i.WorstStatus" ng-class="ctrl.statusClass('text-', i.WorstStatus)"></td>
                     <td>
-                       <a ng-class="{'disabled': !i.NeedAck}" class="btn btn-inverse btn-small" ng-href="{{i.ackLink}}" target="_blank">Ack </a>
-                       <a ng-class="{'disabled': i.CurrentStatus != 'normal'}" class="btn btn-inverse btn-small" ng-href="{{i.closeLink}}" target="_blank">Close </a>
-                       <a ng-class="{'disabled': i.CurrentStatus != 'unknown'}" class="btn btn-inverse btn-small" ng-href="{{i.forgetLink}}" target="_blank">Forget </a>
+                        <a ng-class="{'disabled': !i.NeedAck}" class="btn btn-inverse btn-small" ng-href="{{i.ackLink}}" target="_blank">Ack </a>
+                        <a ng-class="{'disabled': i.CurrentStatus != 'normal'}" class="btn btn-inverse btn-small" ng-href="{{i.closeLink}}" target="_blank">Close </a>
+                        <a ng-class="{'disabled': i.CurrentStatus != 'unknown'}" class="btn btn-inverse btn-small" ng-href="{{i.forgetLink}}" target="_blank">Forget </a>
                     </td>
                     <td>
                         <a class="btn btn-inverse btn-small" ng-click="ctrl.showActions(i)">Actions</a>

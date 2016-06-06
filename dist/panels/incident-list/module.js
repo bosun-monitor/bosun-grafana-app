@@ -1,7 +1,7 @@
 'use strict';
 
-System.register(['lodash', 'app/plugins/sdk', './editor'], function (_export, _context) {
-    var _, MetricsPanelCtrl, bosunIncidentListPanelEditor, _createClass, statusMap, BosunIncidentListCtrl;
+System.register(['lodash', 'moment', 'app/plugins/sdk', './editor'], function (_export, _context) {
+    var _, moment, MetricsPanelCtrl, bosunIncidentListPanelEditor, _createClass, statusMap, BosunIncidentListCtrl;
 
     function _classCallCheck(instance, Constructor) {
         if (!(instance instanceof Constructor)) {
@@ -36,6 +36,8 @@ System.register(['lodash', 'app/plugins/sdk', './editor'], function (_export, _c
     return {
         setters: [function (_lodash) {
             _ = _lodash.default;
+        }, function (_moment) {
+            moment = _moment.default;
         }, function (_appPluginsSdk) {
             MetricsPanelCtrl = _appPluginsSdk.MetricsPanelCtrl;
         }, function (_editor) {
@@ -70,7 +72,7 @@ System.register(['lodash', 'app/plugins/sdk', './editor'], function (_export, _c
             _export('PanelCtrl', _export('BosunIncidentListCtrl', _export('BosunIncidentListCtrl', BosunIncidentListCtrl = function (_MetricsPanelCtrl) {
                 _inherits(BosunIncidentListCtrl, _MetricsPanelCtrl);
 
-                function BosunIncidentListCtrl($scope, $injector, $rootScope, datasourceSrv, templateSrv) {
+                function BosunIncidentListCtrl($scope, $injector, $rootScope, datasourceSrv, templateSrv, utilSrv) {
                     _classCallCheck(this, BosunIncidentListCtrl);
 
                     var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(BosunIncidentListCtrl).call(this, $scope, $injector));
@@ -81,6 +83,9 @@ System.register(['lodash', 'app/plugins/sdk', './editor'], function (_export, _c
                     _this.incidentList = [];
                     //debugger;
                     _this.refreshData();
+                    _this.utilSrv = utilSrv;
+                    _this.bodyHTML = "";
+                    //this.utilSrv.init();
                     return _this;
                 }
 
@@ -135,6 +140,19 @@ System.register(['lodash', 'app/plugins/sdk', './editor'], function (_export, _c
                         });
                     }
                 }, {
+                    key: 'fmtTime',
+                    value: function fmtTime(unixTS) {
+                        return moment.unix(unixTS).format('YYYY-MM-DD HH:mm:ss');
+                    }
+                }, {
+                    key: 'modalTest',
+                    value: function modalTest() {
+                        //var modalScope = this.$scope.$new(true);
+                        //modalScope.plugin = this.model;
+                        // thi
+                        this.utilSrv.showModal(event, { src: "public/plugins/bosun-app/panels/incident-list/modal.html", scope: this.$scope.$new() });
+                    }
+                }, {
                     key: 'statusClass',
                     value: function statusClass(prefix, status) {
                         switch (status) {
@@ -163,10 +181,13 @@ System.register(['lodash', 'app/plugins/sdk', './editor'], function (_export, _c
                 }, {
                     key: 'showBody',
                     value: function showBody(incident) {
+                        var _this2 = this;
+
                         this.datasourceSrv.get(this.panel.datasource).then(function (datasource) {
                             datasource.AlertBodyHTML(incident.AlertName + incident.TagsString).then(function (data) {
-                                incident.bodyHTML = data;
-                                incident.showBody = !incident.showBody;
+                                console.log(_this2);
+                                _this2.bodyHTML = data;
+                                _this2.utilSrv.showModal(event, { src: "public/plugins/bosun-app/panels/incident-list/modal.html", scope: _this2.$scope.$new() });
                             });
                         });
                     }

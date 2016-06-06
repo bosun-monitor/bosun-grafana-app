@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import moment from 'moment';
 import {MetricsPanelCtrl} from 'app/plugins/sdk';
 import {bosunIncidentListPanelEditor} from './editor';
 
@@ -10,7 +11,7 @@ var statusMap = {
 }
 
 export class BosunIncidentListCtrl extends MetricsPanelCtrl {
-    constructor($scope, $injector, $rootScope, datasourceSrv, templateSrv) {
+    constructor($scope, $injector, $rootScope, datasourceSrv, templateSrv, utilSrv) {
         super($scope, $injector);
         this.datasourceSrv = datasourceSrv;
         this.templateSrv = templateSrv;
@@ -18,6 +19,9 @@ export class BosunIncidentListCtrl extends MetricsPanelCtrl {
         this.incidentList = [];
         //debugger;
         this.refreshData();
+        this.utilSrv = utilSrv;
+        this.bodyHTML = ""
+        //this.utilSrv.init();
     }
 
     onInitMetricsPanelEditMode() {
@@ -62,6 +66,17 @@ export class BosunIncidentListCtrl extends MetricsPanelCtrl {
                 })
             });
     }
+    
+    fmtTime(unixTS) {
+        return moment.unix(unixTS).format('YYYY-MM-DD HH:mm:ss');
+    }
+    
+    modalTest() {
+        //var modalScope = this.$scope.$new(true);
+        //modalScope.plugin = this.model;
+        // thi
+        this.utilSrv.showModal(event, {src: "public/plugins/bosun-app/panels/incident-list/modal.html", scope:  this.$scope.$new()})
+    }
 
     statusClass(prefix, status) {
         switch (status) {
@@ -85,8 +100,9 @@ export class BosunIncidentListCtrl extends MetricsPanelCtrl {
         this.datasourceSrv.get(this.panel.datasource).
             then(datasource => {
                 datasource.AlertBodyHTML(incident.AlertName + incident.TagsString).then(data => {
-                    incident.bodyHTML = data;
-                    incident.showBody = !incident.showBody;
+                    console.log(this)
+                    this.bodyHTML = data;
+                    this.utilSrv.showModal(event, {src: "public/plugins/bosun-app/panels/incident-list/modal.html", scope:  this.$scope.$new()})
                 })
             });
     }
