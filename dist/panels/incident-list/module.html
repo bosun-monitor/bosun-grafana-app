@@ -5,33 +5,52 @@
 </style>
 <div>
     <div style="overflow-y: auto; max-height:600px">
+        <div class="pull-right">
+            <div class="gf-form">
+                <select class="input-small width-8" style="height: 24px" ng-model="ctrl.selectedMultiAction">
+                                <option>ack</option>
+                                <option>close</option>
+                                <option>forget</option>
+                            </select>
+                <a class="btn btn-inverse btn-small pull-right" ng-click="ctrl.multiAction()">selected incidents</a>
+            </div>
+        </div>
         <table class="table-panel-table" style="vertical-align:top">
             <thead>
                 <tr>
-                    <th>Subject</th>
-                    <th ng-click="ctrl.sortIncidentsByStatus('CurrentStatus')">Current Status</th>
-                    <th ng-click="ctrl.sortIncidentsByStatus('WorstStatus')">Worst Status</th>
+                    <th ng-click="ctrl.sortIncidentsByStatus('LastAbnormalStatus')">Subject (of Last Abnormal Status)</th>
+                    <th ng-click="ctrl.sortIncidentsByStatus('CurrentStatus')">Current</th>
+                    <th ng-click="ctrl.sortIncidentsByStatus('LastAbnormalStatus')">Last Abnormal</th>
+                    <th ng-click="ctrl.sortIncidents('LastAbnormalTime')">Last Abnormal Time</th>
+                    <th ng-click="ctrl.sortIncidentsByStatus('WorstStatus')">Worst</th>
                     <th>Actions</th>
                     <th>Show Details</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
                 <tr ng-repeat="i in ctrl.incidentList">
                     <td>
-                        <a ng-href="{{i.incidentLink}}" target="_blank" ng-bind="i.Subject"></a>
-                        
+                        <span ng-class="ctrl.statusClass('text-', i.LastAbnormalStatus)" ng-bind="i.Subject"></span>
                     </td>
                     <td ng-bind="i.CurrentStatus" ng-class="ctrl.statusClass('text-', i.CurrentStatus)"></td>
+                    <td ng-bind="i.LastAbnormalStatus" ng-class="ctrl.statusClass('text-', i.LastAbnormalStatus)"></td>
+                    <td ng-bind="ctrl.fmtTime(i.LastAbnormalTime, true)" ng-class="ctrl.statusClass('text-', i.LastAbnormalStatus)"></td>
                     <td ng-bind="i.WorstStatus" ng-class="ctrl.statusClass('text-', i.WorstStatus)"></td>
                     <td>
                         <a ng-class="{'disabled': !i.NeedAck}" class="btn btn-inverse btn-small" ng-click="ctrl.showActionForm(i, 'ack')" target="_blank">Ack </a>
-                        <a ng-class="{'disabled': i.CurrentStatus != 'normal'}" class="btn btn-inverse btn-small" ng-click="ctrl.showActionForm(i, 'close')" target="_blank">Close </a>
-                        <a ng-class="{'disabled': i.CurrentStatus != 'unknown'}" class="btn btn-inverse btn-small" ng-click="ctrl.showActionForm(i, 'forget')" target="_blank">Forget </a>
+                        <a ng-class="{'disabled': i.CurrentStatus != 'normal'}" class="btn btn-inverse btn-small" ng-click="ctrl.showActionForm(i, 'close')"
+                            target="_blank">Close </a>
+                        <a ng-class="{'disabled': i.CurrentStatus != 'unknown'}" class="btn btn-inverse btn-small" ng-click="ctrl.showActionForm(i, 'forget')"
+                            target="_blank">Forget </a>
                     </td>
                     <td>
                         <a class="btn btn-inverse btn-small" ng-click="ctrl.showActions(i)">Actions</a>
                         <a class="btn btn-inverse btn-small" ng-click="ctrl.showBody(i)">Body</a>
                         <a class="btn btn-inverse btn-small" ng-click="ctrl.showEvents(i)">Events</a>
+                    </td>
+                    <td>
+                        <editor-checkbox model="i.selected" text=""></editor-checkbox>
                     </td>
                 </tr>
             </tbody>

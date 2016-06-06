@@ -87,6 +87,7 @@ System.register(['lodash', 'moment', 'app/plugins/sdk', './editor'], function (_
                     _this.refreshData();
                     _this.utilSrv = utilSrv;
                     _this.bodyHTML = "";
+                    _this.reversedFields = {};
                     return _this;
                 }
 
@@ -111,15 +112,24 @@ System.register(['lodash', 'moment', 'app/plugins/sdk', './editor'], function (_
                     }
                 }, {
                     key: 'sortIncidents',
-                    value: function sortIncidents(property) {
+                    value: function sortIncidents(property, reverse) {
                         this.incidentList = _.sortBy(this.incidentList, property);
+                        this.reversedFields[property] = this.reversedFields[property] == false;
+                        if (this.reversedFields[property]) {
+                            this.incidentList.reverse();
+                        }
                     }
                 }, {
                     key: 'sortIncidentsByStatus',
                     value: function sortIncidentsByStatus(property) {
                         this.incidentList = _.sortBy(this.incidentList, function (incident) {
                             return statusMap[incident[property]];
-                        }).reverse();
+                        });
+
+                        this.reversedFields[property] = this.reversedFields[property] == false;
+                        if (this.reversedFields[property]) {
+                            this.incidentList.reverse();
+                        }
                     }
                 }, {
                     key: 'refreshData',
@@ -139,9 +149,13 @@ System.register(['lodash', 'moment', 'app/plugins/sdk', './editor'], function (_
                     }
                 }, {
                     key: 'fmtTime',
-                    value: function fmtTime(unixTS) {
+                    value: function fmtTime(unixTS, relativeOnly) {
                         var m = moment.unix(unixTS);
-                        return m.format('YYYY-MM-DD HH:mm:ss') + ' (' + m.fromNow() + ')';
+                        var relative = '(' + m.fromNow() + ')';
+                        if (relativeOnly) {
+                            return relative;
+                        }
+                        return m.format('YYYY-MM-DD HH:mm:ss ') + relative;
                     }
                 }, {
                     key: 'statusClass',
@@ -178,6 +192,20 @@ System.register(['lodash', 'moment', 'app/plugins/sdk', './editor'], function (_
                             src: "public/plugins/bosun-app/panels/incident-list/modal_events.html",
                             scope: modalScope
                         });
+                    }
+                }, {
+                    key: 'multiAction',
+                    value: function multiAction() {
+                        if (!this.selectedMultiAction) {
+                            return;
+                        }
+                        var incidents = _.filter(this.incidentList, function (incident) {
+                            return incident.selected == true;
+                        });
+                        if (incidents.length == 0) {
+                            return;
+                        }
+                        this.showActionForm(incidents, this.selectedMultiAction);
                     }
                 }, {
                     key: 'showActionForm',

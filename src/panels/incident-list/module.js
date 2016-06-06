@@ -23,6 +23,7 @@ export class BosunIncidentListCtrl extends MetricsPanelCtrl {
         this.refreshData();
         this.utilSrv = utilSrv;
         this.bodyHTML = "";
+        this.reversedFields = {};
     }
 
     onInitMetricsPanelEditMode() {
@@ -39,14 +40,23 @@ export class BosunIncidentListCtrl extends MetricsPanelCtrl {
         this.refreshData();
     }
 
-    sortIncidents(property) {
+    sortIncidents(property, reverse) {
         this.incidentList = _.sortBy(this.incidentList, property)
+        this.reversedFields[property] = this.reversedFields[property] == false;
+        if (this.reversedFields[property]) {
+            this.incidentList.reverse()
+        }
     }
 
     sortIncidentsByStatus(property) {
         this.incidentList = _.sortBy(this.incidentList, (incident) => {
             return statusMap[incident[property]];
-        }).reverse();
+        });
+        
+        this.reversedFields[property] = this.reversedFields[property] == false;
+        if (this.reversedFields[property]) {
+            this.incidentList.reverse()
+        }
     }
 
     refreshData() {
@@ -65,9 +75,13 @@ export class BosunIncidentListCtrl extends MetricsPanelCtrl {
             });
     }
 
-    fmtTime(unixTS) {
+    fmtTime(unixTS, relativeOnly) {
         var m = moment.unix(unixTS);
-        return m.format('YYYY-MM-DD HH:mm:ss') + ' (' + m.fromNow() + ')';
+        var relative = '(' + m.fromNow() + ')'
+        if (relativeOnly) {
+            return relative;
+        }
+        return m.format('YYYY-MM-DD HH:mm:ss ') + relative;
     }
 
     statusClass(prefix, status) {
@@ -98,6 +112,19 @@ export class BosunIncidentListCtrl extends MetricsPanelCtrl {
         });
     }
 
+    multiAction() {
+        if (!this.selectedMultiAction) {
+            return
+        }
+        var incidents = _.filter(this.incidentList, (incident) => {
+            return incident.selected == true;
+        })
+        if (incidents.length == 0) {
+            return
+        }
+        this.showActionForm(incidents, this.selectedMultiAction)
+    }
+
     // incidents can be an incident, but also an [] of incidents    
     showActionForm(incidents, action) {
         if (!Array.isArray(incidents)) {
@@ -126,7 +153,7 @@ export class BosunIncidentListCtrl extends MetricsPanelCtrl {
         });
         this.datasourceSrv.get(this.panel.datasource).
             then(datasource => {
-                datasource.submitAction(actionRequest).then(() => 
+                datasource.submitAction(actionRequest).then(() =>
                     self.refreshData().then()
                 )
             })
