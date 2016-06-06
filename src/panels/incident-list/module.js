@@ -18,7 +18,6 @@ export class BosunIncidentListCtrl extends MetricsPanelCtrl {
         this.$rootScope = $rootScope;
         this.linkUrl = "";
         this.incidentList = [];
-        //debugger;
         this.refreshData = this.refreshData.bind(this);
         this.refreshData();
         this.utilSrv = utilSrv;

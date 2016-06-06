@@ -82,7 +82,6 @@ System.register(['lodash', 'moment', 'app/plugins/sdk', './editor'], function (_
                     _this.$rootScope = $rootScope;
                     _this.linkUrl = "";
                     _this.incidentList = [];
-                    //debugger;
                     _this.refreshData = _this.refreshData.bind(_this);
                     _this.refreshData();
                     _this.utilSrv = utilSrv;

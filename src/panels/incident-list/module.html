@@ -18,7 +18,7 @@
         <table class="table-panel-table" style="vertical-align:top">
             <thead>
                 <tr>
-                    <th ng-click="ctrl.sortIncidentsByStatus('LastAbnormalStatus')">Subject (of Last Abnormal Status)</th>
+                    <th ng-click="ctrl.sortIncidentsByStatus('LastAbnormalStatus')">Subject of Last Abnormal Status (if not unknown)</th>
                     <th ng-click="ctrl.sortIncidentsByStatus('CurrentStatus')">Current</th>
                     <th ng-click="ctrl.sortIncidentsByStatus('LastAbnormalStatus')">Last Abnormal</th>
                     <th ng-click="ctrl.sortIncidents('LastAbnormalTime')">Last Abnormal Time</th>
@@ -31,7 +31,14 @@
             <tbody>
                 <tr ng-repeat="i in ctrl.incidentList">
                     <td>
-                        <span ng-class="ctrl.statusClass('text-', i.LastAbnormalStatus)" ng-bind="i.Subject"></span>
+                        <div ng-class="ctrl.statusClass('text-', i.LastAbnormalStatus)">
+                            <i class="fa fa-exclamation-circle" ng-show="i.CurrentStatus != 'normal'" aria-hidden="true"></i>
+                            <i class="fa fa-volume-off" ng-show="i.Silenced"></i>
+                            <i class="fa fa-question-circle" ng-show="i.Unevaluated"></i>
+                            <span ng-bind="i.Subject"></span>
+                        </div>
+                        <div style="opacity: .65">Alert Key: <span ng-bind="i.AlertName + i.TagsString"></span></div>
+
                     </td>
                     <td ng-bind="i.CurrentStatus" ng-class="ctrl.statusClass('text-', i.CurrentStatus)"></td>
                     <td ng-bind="i.LastAbnormalStatus" ng-class="ctrl.statusClass('text-', i.LastAbnormalStatus)"></td>
