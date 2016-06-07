@@ -283,19 +283,21 @@ export class BosunDatasource {
         });
     }
 
+    // Since the API response is not JSON, we need a transform interceptor to 
+    // handle a text response. Otherwise we just get i.e. 'Internal Server Error'
+    _plainTextResponseTransform(data, headers) {
+        if (headers("content-type").includes("text/plain")) {
+            return { message: data };
+        }
+        return angular.fromJson(data);
+    }
+
     IncidentListQuery(query) {
         var self = this;
         return this.backendSrv.datasourceRequest({
             url: this.url + '/api/incidents/open?filter=' + encodeURIComponent(query),
             method: 'GET',
-            // Since the API response is not JSON, we need a transform interceptor to 
-            // handle a text response. Otherwise we just get i.e. 'Internal Server Error'
-            transformResponse: function (data, headers) {
-                if (headers("content-type").includes("text/plain")) {
-                    return { message: data };
-                }
-                return angular.fromJson(data);
-            }
+            transformResponse: this._plainTextResponseTransform
         }).then(response => {
             if (response.status === 200) {
                 return response.data;
@@ -317,15 +319,17 @@ export class BosunDatasource {
     }
 
     submitAction(actionObj) {
+        var self = this;
         return this.backendSrv.datasourceRequest({
             url: this.url + '/api/action',
             method: 'POST',
             data: actionObj,
-            datasource: this
-        }).then(response => {
-            if (response.status === 200) {
-                return ""
-            }
+            datasource: this,
+            transformResponse: this._plainTextResponseTransform
+        }).then((data) => {
+            self.$rootScope.appEvent('alert-success', ['Incident Action Succeeded', ''])
+        }, (error) => {
+            self.$rootScope.appEvent('alert-error', ['Incident Action Error', error.data.message]);
         })
     }
 

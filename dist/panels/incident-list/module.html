@@ -11,6 +11,8 @@
                                 <option>ack</option>
                                 <option>close</option>
                                 <option>forget</option>
+                                <option value="forceClose">force close</option>
+                                <option>purge</option>
                             </select>
                 <a class="btn btn-inverse btn-small pull-right" ng-click="ctrl.multiAction()">selected incidents</a>
             </div>
@@ -45,10 +47,10 @@
                     <td ng-bind="ctrl.fmtTime(i.LastAbnormalTime, true)" ng-class="ctrl.statusClass('text-', i.LastAbnormalStatus)"></td>
                     <td ng-bind="i.WorstStatus" ng-class="ctrl.statusClass('text-', i.WorstStatus)"></td>
                     <td>
-                        <a ng-class="{'disabled': !i.NeedAck}" class="btn btn-inverse btn-small" ng-click="ctrl.showActionForm(i, 'ack')" target="_blank">Ack </a>
-                        <a ng-class="{'disabled': i.CurrentStatus != 'normal'}" class="btn btn-inverse btn-small" ng-click="ctrl.showActionForm(i, 'close')"
+                        <a ng-class="{'disabled': !i.NeedAck}" class="btn btn-inverse btn-small" ng-click="i.NeedAck && ctrl.showActionForm(i, 'ack')" target="_blank">Ack </a>
+                        <a ng-class="{'disabled': i.CurrentStatus != 'normal'}" class="btn btn-inverse btn-small" ng-click="i.CurrentStatus == 'normal' && ctrl.showActionForm(i, 'close')"
                             target="_blank">Close </a>
-                        <a ng-class="{'disabled': i.CurrentStatus != 'unknown'}" class="btn btn-inverse btn-small" ng-click="ctrl.showActionForm(i, 'forget')"
+                        <a ng-class="{'disabled': i.CurrentStatus != 'unknown'}" class="btn btn-inverse btn-small" ng-click="i.CurrentStatus == 'unknown' && ctrl.showActionForm(i, 'forget')"
                             target="_blank">Forget </a>
                     </td>
                     <td>

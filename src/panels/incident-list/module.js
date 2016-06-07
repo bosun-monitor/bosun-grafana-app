@@ -11,7 +11,7 @@ var statusMap = {
 }
 
 export class BosunIncidentListCtrl extends MetricsPanelCtrl {
-    constructor($scope, $injector, $rootScope, datasourceSrv, templateSrv, utilSrv) {
+    constructor($scope, $injector, $rootScope, datasourceSrv, templateSrv, utilSrv, backendSrv) {
         super($scope, $injector);
         this.datasourceSrv = datasourceSrv;
         this.templateSrv = templateSrv;
@@ -23,6 +23,11 @@ export class BosunIncidentListCtrl extends MetricsPanelCtrl {
         this.utilSrv = utilSrv;
         this.bodyHTML = "";
         this.reversedFields = {};
+        backendSrv.get('/api/user').then(user => {
+            console.log(this)
+            this.user = user;
+        });
+        
     }
 
     onInitMetricsPanelEditMode() {
@@ -51,7 +56,7 @@ export class BosunIncidentListCtrl extends MetricsPanelCtrl {
         this.incidentList = _.sortBy(this.incidentList, (incident) => {
             return statusMap[incident[property]];
         });
-        
+
         this.reversedFields[property] = this.reversedFields[property] == false;
         if (this.reversedFields[property]) {
             this.incidentList.reverse()
@@ -121,6 +126,26 @@ export class BosunIncidentListCtrl extends MetricsPanelCtrl {
         if (incidents.length == 0) {
             return
         }
+        for (var i of incidents) {
+            if (this.selectedMultiAction == "forget") {
+                if (i.CurrentStatus != "unknown") {
+                    this.$rootScope.appEvent('alert-error', ["Action Error", 'can not forget an alert that is not currently unknown: ' + i.AlertName + i.TagsString])
+                    return
+                }
+            }
+            if (this.selectedMultiAction == "close") {
+                if (i.CurrentStatus != "normal") {
+                    this.$rootScope.appEvent('alert-error', ["Action Error", 'can not close an alert that is not currently normal: ' + i.AlertName + i.TagsString])
+                    return
+                }
+            }
+            if (this.selectedMultiAction == "ack") {
+                if (!i.NeedAck) {
+                    this.$rootScope.appEvent('alert-error', ["Action Error", 'can not ack an alert that is already acknowledged: ' + i.AlertName + i.TagsString])
+                    return
+                }
+            }
+        }
         this.showActionForm(incidents, this.selectedMultiAction)
     }
 
@@ -140,6 +165,9 @@ export class BosunIncidentListCtrl extends MetricsPanelCtrl {
 
     submitActionForm(incidents, action) {
         var self = this;
+        if (!this.actionForm) {
+            self.$rootScope.appEvent('alert-error', ['Action Error', 'must fill out form fields'])
+        }
         var actionForm = this.actionForm;
         var actionRequest = {
             Type: action,

@@ -72,7 +72,7 @@ System.register(['lodash', 'moment', 'app/plugins/sdk', './editor'], function (_
             _export('PanelCtrl', _export('BosunIncidentListCtrl', _export('BosunIncidentListCtrl', BosunIncidentListCtrl = function (_MetricsPanelCtrl) {
                 _inherits(BosunIncidentListCtrl, _MetricsPanelCtrl);
 
-                function BosunIncidentListCtrl($scope, $injector, $rootScope, datasourceSrv, templateSrv, utilSrv) {
+                function BosunIncidentListCtrl($scope, $injector, $rootScope, datasourceSrv, templateSrv, utilSrv, backendSrv) {
                     _classCallCheck(this, BosunIncidentListCtrl);
 
                     var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(BosunIncidentListCtrl).call(this, $scope, $injector));
@@ -87,6 +87,11 @@ System.register(['lodash', 'moment', 'app/plugins/sdk', './editor'], function (_
                     _this.utilSrv = utilSrv;
                     _this.bodyHTML = "";
                     _this.reversedFields = {};
+                    backendSrv.get('/api/user').then(function (user) {
+                        console.log(_this);
+                        _this.user = user;
+                    });
+
                     return _this;
                 }
 
@@ -204,6 +209,48 @@ System.register(['lodash', 'moment', 'app/plugins/sdk', './editor'], function (_
                         if (incidents.length == 0) {
                             return;
                         }
+                        var _iteratorNormalCompletion = true;
+                        var _didIteratorError = false;
+                        var _iteratorError = undefined;
+
+                        try {
+                            for (var _iterator = incidents[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                                var i = _step.value;
+
+                                if (this.selectedMultiAction == "forget") {
+                                    if (i.CurrentStatus != "unknown") {
+                                        this.$rootScope.appEvent('alert-error', ["Action Error", 'can not forget an alert that is not currently unknown: ' + i.AlertName + i.TagsString]);
+                                        return;
+                                    }
+                                }
+                                if (this.selectedMultiAction == "close") {
+                                    if (i.CurrentStatus != "normal") {
+                                        this.$rootScope.appEvent('alert-error', ["Action Error", 'can not close an alert that is not currently normal: ' + i.AlertName + i.TagsString]);
+                                        return;
+                                    }
+                                }
+                                if (this.selectedMultiAction == "ack") {
+                                    if (!i.NeedAck) {
+                                        this.$rootScope.appEvent('alert-error', ["Action Error", 'can not ack an alert that is already acknowledged: ' + i.AlertName + i.TagsString]);
+                                        return;
+                                    }
+                                }
+                            }
+                        } catch (err) {
+                            _didIteratorError = true;
+                            _iteratorError = err;
+                        } finally {
+                            try {
+                                if (!_iteratorNormalCompletion && _iterator.return) {
+                                    _iterator.return();
+                                }
+                            } finally {
+                                if (_didIteratorError) {
+                                    throw _iteratorError;
+                                }
+                            }
+                        }
+
                         this.showActionForm(incidents, this.selectedMultiAction);
                     }
                 }, {
@@ -224,6 +271,9 @@ System.register(['lodash', 'moment', 'app/plugins/sdk', './editor'], function (_
                     key: 'submitActionForm',
                     value: function submitActionForm(incidents, action) {
                         var self = this;
+                        if (!this.actionForm) {
+                            self.$rootScope.appEvent('alert-error', ['Action Error', 'must fill out form fields']);
+                        }
                         var actionForm = this.actionForm;
                         var actionRequest = {
                             Type: action,

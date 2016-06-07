@@ -329,20 +329,21 @@ System.register(['app/core/table_model', 'moment'], function (_export, _context)
                         });
                     }
                 }, {
+                    key: '_plainTextResponseTransform',
+                    value: function _plainTextResponseTransform(data, headers) {
+                        if (headers("content-type").includes("text/plain")) {
+                            return { message: data };
+                        }
+                        return angular.fromJson(data);
+                    }
+                }, {
                     key: 'IncidentListQuery',
                     value: function IncidentListQuery(query) {
                         var self = this;
                         return this.backendSrv.datasourceRequest({
                             url: this.url + '/api/incidents/open?filter=' + encodeURIComponent(query),
                             method: 'GET',
-                            // Since the API response is not JSON, we need a transform interceptor to
-                            // handle a text response. Otherwise we just get i.e. 'Internal Server Error'
-                            transformResponse: function transformResponse(data, headers) {
-                                if (headers("content-type").includes("text/plain")) {
-                                    return { message: data };
-                                }
-                                return angular.fromJson(data);
-                            }
+                            transformResponse: this._plainTextResponseTransform
                         }).then(function (response) {
                             if (response.status === 200) {
                                 return response.data;
@@ -368,15 +369,17 @@ System.register(['app/core/table_model', 'moment'], function (_export, _context)
                 }, {
                     key: 'submitAction',
                     value: function submitAction(actionObj) {
+                        var self = this;
                         return this.backendSrv.datasourceRequest({
                             url: this.url + '/api/action',
                             method: 'POST',
                             data: actionObj,
-                            datasource: this
-                        }).then(function (response) {
-                            if (response.status === 200) {
-                                return "";
-                            }
+                            datasource: this,
+                            transformResponse: this._plainTextResponseTransform
+                        }).then(function (data) {
+                            self.$rootScope.appEvent('alert-success', ['Incident Action Succeeded', '']);
+                        }, function (error) {
+                            self.$rootScope.appEvent('alert-error', ['Incident Action Error', error.data.message]);
                         });
                     }
                 }, {
