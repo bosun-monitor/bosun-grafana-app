@@ -23,6 +23,7 @@ export class BosunIncidentListCtrl extends MetricsPanelCtrl {
         this.utilSrv = utilSrv;
         this.bodyHTML = "";
         this.reversedFields = {};
+        this.showHelp = 0;
         backendSrv.get('/api/user').then(user => {
             console.log(this)
             this.user = user;

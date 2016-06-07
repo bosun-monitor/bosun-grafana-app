@@ -87,6 +87,7 @@ System.register(['lodash', 'moment', 'app/plugins/sdk', './editor'], function (_
                     _this.utilSrv = utilSrv;
                     _this.bodyHTML = "";
                     _this.reversedFields = {};
+                    _this.showHelp = 0;
                     backendSrv.get('/api/user').then(function (user) {
                         console.log(_this);
                         _this.user = user;
