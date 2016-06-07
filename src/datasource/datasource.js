@@ -2,7 +2,7 @@ import TableModel from 'app/core/table_model';
 import moment from 'moment';
 
 export class BosunDatasource {
-    constructor(instanceSettings, $q, backendSrv, templateSrv, $sce) {
+    constructor(instanceSettings, $q, backendSrv, templateSrv, $sce, $rootScope) {
         this.annotateUrl = instanceSettings.jsonData.annotateUrl;
         this.type = instanceSettings.type;
         this.url = instanceSettings.url;
@@ -12,6 +12,8 @@ export class BosunDatasource {
         this.backendSrv = backendSrv;
         this.templateSrv = templateSrv;
         this.sce = $sce;
+        this.$rootScope = $rootScope;
+        this.IncidentListQuery = this.IncidentListQuery.bind(this);
     }
 
     makeTable(result) {
@@ -282,13 +284,24 @@ export class BosunDatasource {
     }
 
     IncidentListQuery(query) {
+        var self = this;
         return this.backendSrv.datasourceRequest({
             url: this.url + '/api/incidents/open?filter=' + encodeURIComponent(query),
-            method: 'GET'
+            method: 'GET',
+            // Since the API response is not JSON, we need a transform interceptor to 
+            // handle a text response. Otherwise we just get i.e. 'Internal Server Error'
+            transformResponse: function (data, headers) {
+                if (headers("content-type").includes("text/plain")) {
+                    return { message: data };
+                }
+                return angular.fromJson(data);
+            }
         }).then(response => {
             if (response.status === 200) {
                 return response.data;
             }
+        }, (error) => {
+            self.$rootScope.appEvent('alert-error', ['IncidentListQuery Error', error.data.message]);
         })
     }
 
