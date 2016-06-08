@@ -7,7 +7,7 @@
   "annotations": true,
 
   "info": {
-    "description": "Bosun datasource",
+    "description": "Bosun Datasource and Bosun Panels",
     "author": {
       "name": "Bosun Team",
       "url": "http://bosun.org"
@@ -21,8 +21,8 @@
       {"name": "GitHub", "url": "https://github.com/bosun-monitor/bosun-grafana-app"},
       {"name": "MIT License", "url": "https://github.com/bosun-monitor/bosun-grafana-app/blob/master/LICENSE"}
     ],
-    "version": "0.0.12",
-    "updated": "2016-05-26"
+    "version": "0.0.13",
+    "updated": "2016-06-08"
   },
 
   "includes": [

@@ -1,8 +1,8 @@
 {
   "name": "bosun-app",
   "private": true,
-  "version": "0.0.12",
-  "description": "",
+  "version": "0.0.13",
+  "description": "Bosun Datasource and Bosun Panels",
   "repository": {
     "type": "git",
     "url": "git@github.com:bosun-monitor/bosun-grafana-app.git"
