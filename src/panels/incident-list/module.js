@@ -13,7 +13,9 @@ var statusMap = {
 export class BosunIncidentListCtrl extends MetricsPanelCtrl {
     constructor($scope, $injector, $rootScope, datasourceSrv, templateSrv, utilSrv, backendSrv) {
         super($scope, $injector);
+        var self = this;
         this.datasourceSrv = datasourceSrv;
+
         this.templateSrv = templateSrv;
         this.$rootScope = $rootScope;
         this.linkUrl = "";
@@ -28,8 +30,10 @@ export class BosunIncidentListCtrl extends MetricsPanelCtrl {
             console.log(this)
             this.user = user;
         });
-        
+
     }
+
+
 
     onInitMetricsPanelEditMode() {
         this.addEditorTab('Options', bosunIncidentListPanelEditor, 2);

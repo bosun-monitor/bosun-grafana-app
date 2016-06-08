@@ -77,7 +77,9 @@ System.register(['lodash', 'moment', 'app/plugins/sdk', './editor'], function (_
 
                     var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(BosunIncidentListCtrl).call(this, $scope, $injector));
 
+                    var self = _this;
                     _this.datasourceSrv = datasourceSrv;
+
                     _this.templateSrv = templateSrv;
                     _this.$rootScope = $rootScope;
                     _this.linkUrl = "";

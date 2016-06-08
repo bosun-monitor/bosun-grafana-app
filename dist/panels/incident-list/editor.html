@@ -9,6 +9,23 @@
     </div>
 </editor-row>
 
+<div class="section">
+    <h5>Data source</h5>
+    <div class="section tight-form-container" style="margin-bottom: 20px">
+      <div class="tight-form">
+        <ul class="tight-form-list">
+          <li>
+            <select class="tight-form-input input-large last"
+                    ng-model="ctrl.panel.datasource"
+                    ng-options="ds for ds in editor.datasources"
+                    ng-change="editor.datasourceChanged()">
+            </select>
+          </li>
+        </ul>
+        <div class="clearfix"></div>
+    </div>
+  </div>
+
 <editor-row>
     <div class="gf-form ">
         <button class="btn btn-inverse " ng-click="ctrl.showHelp=ctrl.showHelp==0 ? 1:0">Bosun Incident Filter Help</button>
@@ -60,7 +77,7 @@
                     <td>Returns incidents that started before <code><</code> or incidents that started after <code>></code> the
                         relative time to now based on the duration. Duration can be in units of s (seconds), m (minutes),
                         h (hours), d (days), w (weeks), n (months), y (years). If less than or greater than are not part
-                        of the value, it defaults to less than (before). Now is clock time and is not related to the time
+                        of the value, it defaults to greater than (after). Now is clock time and is not related to the time
                         range specified in Grafana.</td>
                 </tr>
                 <tr>

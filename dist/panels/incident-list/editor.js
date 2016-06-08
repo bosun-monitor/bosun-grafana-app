@@ -1,7 +1,7 @@
 'use strict';
 
 System.register([], function (_export, _context) {
-    var BosunIncidentListPanelEditorCtrl;
+    var _createClass, BosunIncidentListPanelEditorCtrl;
 
     function _classCallCheck(instance, Constructor) {
         if (!(instance instanceof Constructor)) {
@@ -12,17 +12,58 @@ System.register([], function (_export, _context) {
     return {
         setters: [],
         execute: function () {
-            BosunIncidentListPanelEditorCtrl = function BosunIncidentListPanelEditorCtrl($scope, $rootScope, $q, uiSegmentSrv, datasourceSrv, templateSrv) {
-                _classCallCheck(this, BosunIncidentListPanelEditorCtrl);
+            _createClass = function () {
+                function defineProperties(target, props) {
+                    for (var i = 0; i < props.length; i++) {
+                        var descriptor = props[i];
+                        descriptor.enumerable = descriptor.enumerable || false;
+                        descriptor.configurable = true;
+                        if ("value" in descriptor) descriptor.writable = true;
+                        Object.defineProperty(target, descriptor.key, descriptor);
+                    }
+                }
 
-                $scope.editor = this;
-                this.panelCtrl = $scope.ctrl;
-                this.panel = this.panelCtrl.panel;
+                return function (Constructor, protoProps, staticProps) {
+                    if (protoProps) defineProperties(Constructor.prototype, protoProps);
+                    if (staticProps) defineProperties(Constructor, staticProps);
+                    return Constructor;
+                };
+            }();
 
-                this.$q = $q;
-                this.datasourceSrv = datasourceSrv;
-                this.templateSrv = templateSrv;
-            };
+            BosunIncidentListPanelEditorCtrl = function () {
+                function BosunIncidentListPanelEditorCtrl($scope, $rootScope, $q, uiSegmentSrv, datasourceSrv, templateSrv) {
+                    _classCallCheck(this, BosunIncidentListPanelEditorCtrl);
+
+                    $scope.editor = this;
+                    this.panelCtrl = $scope.ctrl;
+                    this.panel = this.panelCtrl.panel;
+                    this.$q = $q;
+
+                    var self = this;
+                    this.datasourceSrv = datasourceSrv;
+                    var datasources = _.filter(this.datasourceSrv.getMetricSources(), function (datasource) {
+                        return datasource.meta.id === 'bosun-datasource';
+                    });
+                    this.datasources = _.map(datasources, 'name');
+                    if (!this.panel.datasource) {
+                        this.panel.datasource = this.datasources[0];
+                    }
+                    this.datasourceSrv.get(this.panel.datasource).then(function (datasource) {
+                        self.datasource = datasource;
+                        self.panelCtrl.refresh();
+                    });
+                    this.templateSrv = templateSrv;
+                }
+
+                _createClass(BosunIncidentListPanelEditorCtrl, [{
+                    key: 'datasourceChanged',
+                    value: function datasourceChanged() {
+                        this.panelCtrl.refresh();
+                    }
+                }]);
+
+                return BosunIncidentListPanelEditorCtrl;
+            }();
 
             function bosunIncidentListPanelEditor() {
                 return {
