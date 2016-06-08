@@ -340,8 +340,12 @@ System.register(['app/core/table_model', 'moment'], function (_export, _context)
                     key: 'IncidentListQuery',
                     value: function IncidentListQuery(query) {
                         var self = this;
+                        var url = this.url + '/api/incidents/open';
+                        if (query) {
+                            url += '?filter=' + encodeURIComponent(query);
+                        }
                         return this.backendSrv.datasourceRequest({
-                            url: this.url + '/api/incidents/open?filter=' + encodeURIComponent(query),
+                            url: url,
                             method: 'GET',
                             transformResponse: this._plainTextResponseTransform
                         }).then(function (response) {

@@ -91,10 +91,8 @@ System.register(['lodash', 'moment', 'app/plugins/sdk', './editor'], function (_
                     _this.reversedFields = {};
                     _this.showHelp = 0;
                     backendSrv.get('/api/user').then(function (user) {
-                        console.log(_this);
                         _this.user = user;
                     });
-
                     return _this;
                 }
 

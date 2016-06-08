@@ -4,7 +4,7 @@
     }
 </style>
 <div>
-    <div style="overflow-y: auto; max-height:600px">
+    <div ng-style="{'overflow-y': 'auto', 'max-height': ctrl.row.height}">
         <div class="pull-right">
             <div class="gf-form">
                 <select class="input-small width-8" style="height: 24px" ng-model="ctrl.selectedMultiAction">

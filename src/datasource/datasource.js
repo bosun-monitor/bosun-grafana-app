@@ -294,8 +294,12 @@ export class BosunDatasource {
 
     IncidentListQuery(query) {
         var self = this;
+        var url = this.url + '/api/incidents/open';
+        if (query) {
+            url += '?filter=' + encodeURIComponent(query)
+        }
         return this.backendSrv.datasourceRequest({
-            url: this.url + '/api/incidents/open?filter=' + encodeURIComponent(query),
+            url: url,
             method: 'GET',
             transformResponse: this._plainTextResponseTransform
         }).then(response => {
