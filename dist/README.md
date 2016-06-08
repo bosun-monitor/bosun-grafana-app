@@ -1,9 +1,13 @@
-# Bosun datasource
+## Bosun app
+
+The Bosun app currently provides a datasource for Bosun, and a panel to list open incidents. This plugin replaces the datasource plugin.
+
+## Bosun datasource
 Bosun datasource plugin for Grafana 3.0 and later
 
 This plugin turns [Bosun](http://bosun.org) into a datasource for Grafana 3.0 and later. This means you can use any [Bosun expression](http://bosun.org/expressions) to generate cool dashboards which are not possible with OpenTSDB alone.
 
-## Usage
+### Usage
 
 The datasource provides 2 special variables that make easier to integrate the expressions in Grafana:
 * $ds - the suggested downsampling interval for use in your queries
@@ -24,7 +28,7 @@ Aliases can make use of variables in the format ```$tag_<tagname>``` to use the 
 It's also possible to use any other templated variable in your queries, the same way it's possible on other datasources
 
 
-## Templating
+### Templating
 The following functions can be used in a query for template variables:
 * tagvalues(metric.name, tagname):  ```tagvalues(os.load, host)```
 * tagkeys(metric.name): ```tagkeys(os.load)```
@@ -32,7 +36,7 @@ The following functions can be used in a query for template variables:
 ![Templating variable](https://raw.githubusercontent.com/bosun-monitor/bosun-grafana-datasource/master/src/screenshots/templating.png)
 
 
-## Query helper
+### Query helper
 If you use Bosun to index data from OpenTSDB, it's possible to enable the Query Helper on data source configuration.
 
 ![Enabling query helper](https://raw.githubusercontent.com/bosun-monitor/bosun-grafana-datasource/master/src/screenshots/query-helper-config.png)
