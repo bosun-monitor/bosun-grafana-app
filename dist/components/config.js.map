@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../src/components/config.js"],"names":[],"mappings":";;;;;;;;;;;;;;;;oCAAa,kB,GACX,8BAAc;AAAA;AAAG,O","file":"config.js","sourcesContent":["export class BosunAppConfigCtrl {\r\n  constructor() { }\r\n}"]}
