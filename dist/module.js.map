@@ -1,1 +1,1 @@
-{"version":3,"sources":["../src/module.js"],"names":[],"mappings":";;;;;;;;AAAQ,wB,qBAAA,kB;;;4BAGN,kB","file":"module.js","sourcesContent":["import {BosunAppConfigCtrl} from './components/config';\r\n\r\nexport {\r\n  BosunAppConfigCtrl as ConfigCtrl\r\n};"]}
+{"version":3,"sources":["../src/module.js"],"names":[],"mappings":";;;;;;AAAQ;;;4BAGN","file":"module.js","sourcesContent":["import {BosunAppConfigCtrl} from './components/config';\n\nexport {\n  BosunAppConfigCtrl as ConfigCtrl\n};"]}

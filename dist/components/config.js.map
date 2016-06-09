@@ -1,1 +1,1 @@
-{"version":3,"sources":["../../src/components/config.js"],"names":[],"mappings":";;;;;;;;;;;;;;;;oCAAa,kB,GACX,8BAAc;AAAA;AAAG,O","file":"config.js","sourcesContent":["export class BosunAppConfigCtrl {\r\n  constructor() { }\r\n}"]}
+{"version":3,"sources":["../../src/components/config.js"],"names":[],"mappings":";;;;;;;;;;;;;;oCAAa,qBACX,SADW,kBACX,GAAc;8BADH,oBACG;OAAd","file":"config.js","sourcesContent":["export class BosunAppConfigCtrl {\n  constructor() { }\n}"]}
