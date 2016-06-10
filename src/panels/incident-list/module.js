@@ -14,6 +14,7 @@ export class BosunIncidentListCtrl extends MetricsPanelCtrl {
     constructor($scope, $injector, $rootScope, $window, datasourceSrv, templateSrv, utilSrv, backendSrv, dashboardSrv) {
         super($scope, $injector);
         var self = this;
+        this.panelCtrl = $scope.ctrl;
         this.datasourceSrv = datasourceSrv;
         this.$window = $window;
         this.templateSrv = templateSrv;
@@ -35,6 +36,7 @@ export class BosunIncidentListCtrl extends MetricsPanelCtrl {
 
 
     onInitMetricsPanelEditMode() {
+        this.fullscreen = true;
         this.addEditorTab('Options', bosunIncidentListPanelEditor, 2);
     }
 

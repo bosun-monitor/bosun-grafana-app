@@ -78,6 +78,7 @@ System.register(['lodash', 'moment', 'app/plugins/sdk', './editor'], function (_
                     var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(BosunIncidentListCtrl).call(this, $scope, $injector));
 
                     var self = _this;
+                    _this.panelCtrl = $scope.ctrl;
                     _this.datasourceSrv = datasourceSrv;
                     _this.$window = $window;
                     _this.templateSrv = templateSrv;
@@ -100,6 +101,7 @@ System.register(['lodash', 'moment', 'app/plugins/sdk', './editor'], function (_
                 _createClass(BosunIncidentListCtrl, [{
                     key: 'onInitMetricsPanelEditMode',
                     value: function onInitMetricsPanelEditMode() {
+                        this.fullscreen = true;
                         this.addEditorTab('Options', bosunIncidentListPanelEditor, 2);
                     }
                 }, {
