@@ -146,6 +146,7 @@ System.register(['lodash', 'moment', 'app/plugins/sdk', './editor'], function (_
                 }, {
                     key: 'sortIncidents',
                     value: function sortIncidents(property, noswap) {
+                        this.incidentList = _.sortBy(this.incidentList, 'Id');
                         this.incidentList = _.sortBy(this.incidentList, property);
                         if (!noswap) {
                             this.reversedFields[property] = this.reversedFields[property] == false;
@@ -158,6 +159,7 @@ System.register(['lodash', 'moment', 'app/plugins/sdk', './editor'], function (_
                 }, {
                     key: 'sortIncidentsByStatus',
                     value: function sortIncidentsByStatus(property, noswap) {
+                        this.incidentList = _.sortBy(this.incidentList, 'Id');
                         this.incidentList = _.sortBy(this.incidentList, function (incident) {
                             return statusMap[incident[property]];
                         });

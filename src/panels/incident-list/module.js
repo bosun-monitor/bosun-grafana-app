@@ -73,6 +73,7 @@ export class BosunIncidentListCtrl extends MetricsPanelCtrl {
     }
 
     sortIncidents(property, noswap) {
+        this.incidentList = _.sortBy(this.incidentList, 'Id');
         this.incidentList = _.sortBy(this.incidentList, property)
         if (!noswap) {
             this.reversedFields[property] = this.reversedFields[property] == false;
@@ -84,6 +85,7 @@ export class BosunIncidentListCtrl extends MetricsPanelCtrl {
     }
 
     sortIncidentsByStatus(property, noswap) {
+        this.incidentList = _.sortBy(this.incidentList, 'Id');
         this.incidentList = _.sortBy(this.incidentList, (incident) => {
             return statusMap[incident[property]];
         });
