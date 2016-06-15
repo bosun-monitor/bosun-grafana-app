@@ -262,7 +262,7 @@ export class BosunDatasource {
                         text.push("User: " + a.CreationUser);
                     }
                     if (a.Owner) {
-                        text.push("Host: " + a.Owner);
+                        text.push("Owner: " + a.Owner);
                     }
                     if (a.Url) {
                         text.push('<a href="' + a.Url + '">' + a.Url.substring(0, 50) + '</a>');

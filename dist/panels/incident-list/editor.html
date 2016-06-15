@@ -9,25 +9,35 @@
     </div>
 </editor-row>
 
-<div class="section">
-    <h5>Data source</h5>
-    <div class="section tight-form-container" style="margin-bottom: 20px">
-      <div class="tight-form">
+<editor-row class="section" query-ctrl="ctrl">
+    <div class="gf-form">
+        <label class="gf-form-label">Data Source</label>
         <ul class="tight-form-list">
-          <li>
-            <select class="tight-form-input input-large last"
-                    ng-model="ctrl.panel.datasource"
-                    ng-options="ds for ds in editor.datasources"
+            <li>
+                <select class="tight-form-input input-large last" ng-model="ctrl.panel.datasource" ng-options="ds for ds in editor.datasources"
                     ng-change="editor.datasourceChanged()">
             </select>
-          </li>
+            </li>
         </ul>
         <div class="clearfix"></div>
     </div>
-  </div>
+</editor-row>
+
+<editor-row query-ctrl="ctrl">
+    <div class="gf-form" style="align-items:flex-start;">
+        <div class="gf-form">
+            <label class="gf-form-label">
+                Show Multi-Selection Actions:
+                <info-popover>Show the selected incidents form and select boxes when not in fullscreen mode (edit / view). This is always displayed when in fullscreen mode.</info-popover>
+            </label>
+
+            <editor-checkbox model="ctrl.showMulti" text=""></editor-checkbox>
+        </div>
+    </div>
+</editor-row>
 
 <editor-row>
-    <div class="gf-form ">
+    <div class="gf-form">
         <button class="btn btn-inverse " ng-click="ctrl.showHelp=ctrl.showHelp==0 ? 1:0">Bosun Incident Filter Help</button>
     </div>
     <div ng-show="ctrl.showHelp">
@@ -82,7 +92,8 @@
                 </tr>
                 <tr>
                     <td><code>unevaluated:(true|false)</code></td>
-                    <td>If <code>unevaluated:false</code> incidents that are not in an unevaluated state are returned, when <code>ack:true</code>                        incidents that are unevaluated are returned.</td>
+                    <td>If <code>unevaluated:false</code> incidents that are not in an unevaluated state are returned, when
+                        <code>ack:true</code> incidents that are unevaluated are returned.</td>
 
                 </tr>
                 <tr>
@@ -97,7 +108,7 @@
                     <td><code>lastAbnormalStatus:(warning|critical|unknown)</code></td>
                     <td>Returns incidents that have a last abnormal status equal to the requested state</td>
                 </tr>
-                 <tr>
+                <tr>
                     <td><code>subject:(something*)</code></td>
                     <td>Returns incidents where the subject string matches the value. Globs can be used in the value</td>
                 </tr>

@@ -11,11 +11,12 @@ var statusMap = {
 }
 
 export class BosunIncidentListCtrl extends MetricsPanelCtrl {
-    constructor($scope, $injector, $rootScope, datasourceSrv, templateSrv, utilSrv, backendSrv) {
+    constructor($scope, $injector, $rootScope, $window, datasourceSrv, templateSrv, utilSrv, backendSrv, dashboardSrv) {
         super($scope, $injector);
         var self = this;
+        this.panelCtrl = $scope.ctrl;
         this.datasourceSrv = datasourceSrv;
-
+        this.$window = $window;
         this.templateSrv = templateSrv;
         this.$rootScope = $rootScope;
         this.linkUrl = "";
@@ -26,6 +27,7 @@ export class BosunIncidentListCtrl extends MetricsPanelCtrl {
         this.bodyHTML = "";
         this.reversedFields = {};
         this.showHelp = 0;
+        this.storeId = dashboardSrv.currentDashboard.id + "-" + this.panel.id;
         backendSrv.get('/api/user').then(user => {
             this.user = user;
         });
@@ -34,11 +36,36 @@ export class BosunIncidentListCtrl extends MetricsPanelCtrl {
 
 
     onInitMetricsPanelEditMode() {
+        this.fullscreen = true;
         this.addEditorTab('Options', bosunIncidentListPanelEditor, 2);
     }
 
     refresh() {
         this.onMetricsPanelRefresh();
+    }
+
+    getSort() {
+        return this.$window.sessionStorage.getItem(this.storeId + "sort");
+    }
+
+    setSort(type, field, rev) {
+        this.$window.sessionStorage.setItem(this.storeId + "sort", [type, field, rev].join(":"));
+    }
+
+    callSort() {
+        var sortSpec = this.getSort();
+        if (!sortSpec || sortSpec == "") {
+            return;
+        }
+        // Property, Type, Reverse?
+        var split = sortSpec.split(":");
+        this.reversedFields[split[0]] = split[2] == "true";
+        if (split[1] == "status") {
+            this.sortIncidentsByStatus(split[0], true);
+        }
+        if (split[1] == "alpha") {
+            this.sortIncidents(split[0], true);
+        }
     }
 
     onMetricsPanelRefresh() {
@@ -47,22 +74,29 @@ export class BosunIncidentListCtrl extends MetricsPanelCtrl {
         this.refreshData();
     }
 
-    sortIncidents(property, reverse) {
+    sortIncidents(property, noswap) {
+        this.incidentList = _.sortBy(this.incidentList, 'Id');
         this.incidentList = _.sortBy(this.incidentList, property)
-        this.reversedFields[property] = this.reversedFields[property] == false;
-        if (this.reversedFields[property]) {
-            this.incidentList.reverse()
+        if (!noswap) {
+            this.reversedFields[property] = this.reversedFields[property] == false;
+        }
+        this.setSort(property, "alpha", this.reversedFields[property])
+        if (this.reversedFields[property] == true) {
+            this.incidentList.reverse();
         }
     }
 
-    sortIncidentsByStatus(property) {
+    sortIncidentsByStatus(property, noswap) {
+        this.incidentList = _.sortBy(this.incidentList, 'Id');
         this.incidentList = _.sortBy(this.incidentList, (incident) => {
             return statusMap[incident[property]];
         });
-
-        this.reversedFields[property] = this.reversedFields[property] == false;
-        if (this.reversedFields[property]) {
-            this.incidentList.reverse()
+        if (!noswap) {
+            this.reversedFields[property] = this.reversedFields[property] == false;
+        }
+        this.setSort(property, "status", this.reversedFields[property])
+        if (this.reversedFields[property] == true) {
+            this.incidentList.reverse();
         }
     }
 
@@ -78,6 +112,7 @@ export class BosunIncidentListCtrl extends MetricsPanelCtrl {
                         return item;
                     })
                     that.incidentList = data;
+                    that.callSort();
                 })
             });
     }

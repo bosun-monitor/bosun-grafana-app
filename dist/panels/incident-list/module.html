@@ -6,7 +6,7 @@
 <div>
     <div ng-style="{'overflow-y': 'auto', 'max-height': ctrl.row.height}">
         <div class="pull-right">
-            <div class="gf-form">
+            <div class="gf-form" ng-if="ctrl.showMulti || ctrl.fullscreen">
                 <select class="input-small width-8" style="height: 24px" ng-model="ctrl.selectedMultiAction">
                                 <option>ack</option>
                                 <option>close</option>
@@ -20,14 +20,14 @@
         <table class="table-panel-table" style="vertical-align:top">
             <thead>
                 <tr>
-                    <th ng-click="ctrl.sortIncidentsByStatus('LastAbnormalStatus')">Subject of Last Abnormal Status (if not unknown)</th>
+                    <th ng-click="ctrl.sortIncidents('Subject')">Subject of Last Abnormal Status (if not unknown)</th>
                     <th ng-click="ctrl.sortIncidentsByStatus('CurrentStatus')">Current</th>
                     <th ng-click="ctrl.sortIncidentsByStatus('LastAbnormalStatus')">Last Abnormal</th>
                     <th ng-click="ctrl.sortIncidents('LastAbnormalTime')">Last Abnormal Time</th>
                     <th ng-click="ctrl.sortIncidentsByStatus('WorstStatus')">Worst</th>
                     <th>Actions</th>
                     <th>Show Details</th>
-                    <th>Action</th>
+                    <th ng-if="ctrl.showMulti || ctrl.fullscreen">Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -58,7 +58,7 @@
                         <a class="btn btn-inverse btn-small" ng-click="ctrl.showBody(i)">Body</a>
                         <a class="btn btn-inverse btn-small" ng-click="ctrl.showEvents(i)">Events</a>
                     </td>
-                    <td>
+                    <td ng-if="ctrl.showMulti || ctrl.fullscreen">
                         <editor-checkbox model="i.selected" text=""></editor-checkbox>
                     </td>
                 </tr>

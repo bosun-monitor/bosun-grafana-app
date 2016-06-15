@@ -72,14 +72,15 @@ System.register(['lodash', 'moment', 'app/plugins/sdk', './editor'], function (_
             _export('PanelCtrl', _export('BosunIncidentListCtrl', _export('BosunIncidentListCtrl', BosunIncidentListCtrl = function (_MetricsPanelCtrl) {
                 _inherits(BosunIncidentListCtrl, _MetricsPanelCtrl);
 
-                function BosunIncidentListCtrl($scope, $injector, $rootScope, datasourceSrv, templateSrv, utilSrv, backendSrv) {
+                function BosunIncidentListCtrl($scope, $injector, $rootScope, $window, datasourceSrv, templateSrv, utilSrv, backendSrv, dashboardSrv) {
                     _classCallCheck(this, BosunIncidentListCtrl);
 
                     var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(BosunIncidentListCtrl).call(this, $scope, $injector));
 
                     var self = _this;
+                    _this.panelCtrl = $scope.ctrl;
                     _this.datasourceSrv = datasourceSrv;
-
+                    _this.$window = $window;
                     _this.templateSrv = templateSrv;
                     _this.$rootScope = $rootScope;
                     _this.linkUrl = "";
@@ -90,6 +91,7 @@ System.register(['lodash', 'moment', 'app/plugins/sdk', './editor'], function (_
                     _this.bodyHTML = "";
                     _this.reversedFields = {};
                     _this.showHelp = 0;
+                    _this.storeId = dashboardSrv.currentDashboard.id + "-" + _this.panel.id;
                     backendSrv.get('/api/user').then(function (user) {
                         _this.user = user;
                     });
@@ -99,12 +101,40 @@ System.register(['lodash', 'moment', 'app/plugins/sdk', './editor'], function (_
                 _createClass(BosunIncidentListCtrl, [{
                     key: 'onInitMetricsPanelEditMode',
                     value: function onInitMetricsPanelEditMode() {
+                        this.fullscreen = true;
                         this.addEditorTab('Options', bosunIncidentListPanelEditor, 2);
                     }
                 }, {
                     key: 'refresh',
                     value: function refresh() {
                         this.onMetricsPanelRefresh();
+                    }
+                }, {
+                    key: 'getSort',
+                    value: function getSort() {
+                        return this.$window.sessionStorage.getItem(this.storeId + "sort");
+                    }
+                }, {
+                    key: 'setSort',
+                    value: function setSort(type, field, rev) {
+                        this.$window.sessionStorage.setItem(this.storeId + "sort", [type, field, rev].join(":"));
+                    }
+                }, {
+                    key: 'callSort',
+                    value: function callSort() {
+                        var sortSpec = this.getSort();
+                        if (!sortSpec || sortSpec == "") {
+                            return;
+                        }
+                        // Property, Type, Reverse?
+                        var split = sortSpec.split(":");
+                        this.reversedFields[split[0]] = split[2] == "true";
+                        if (split[1] == "status") {
+                            this.sortIncidentsByStatus(split[0], true);
+                        }
+                        if (split[1] == "alpha") {
+                            this.sortIncidents(split[0], true);
+                        }
                     }
                 }, {
                     key: 'onMetricsPanelRefresh',
@@ -117,22 +147,29 @@ System.register(['lodash', 'moment', 'app/plugins/sdk', './editor'], function (_
                     }
                 }, {
                     key: 'sortIncidents',
-                    value: function sortIncidents(property, reverse) {
+                    value: function sortIncidents(property, noswap) {
+                        this.incidentList = _.sortBy(this.incidentList, 'Id');
                         this.incidentList = _.sortBy(this.incidentList, property);
-                        this.reversedFields[property] = this.reversedFields[property] == false;
-                        if (this.reversedFields[property]) {
+                        if (!noswap) {
+                            this.reversedFields[property] = this.reversedFields[property] == false;
+                        }
+                        this.setSort(property, "alpha", this.reversedFields[property]);
+                        if (this.reversedFields[property] == true) {
                             this.incidentList.reverse();
                         }
                     }
                 }, {
                     key: 'sortIncidentsByStatus',
-                    value: function sortIncidentsByStatus(property) {
+                    value: function sortIncidentsByStatus(property, noswap) {
+                        this.incidentList = _.sortBy(this.incidentList, 'Id');
                         this.incidentList = _.sortBy(this.incidentList, function (incident) {
                             return statusMap[incident[property]];
                         });
-
-                        this.reversedFields[property] = this.reversedFields[property] == false;
-                        if (this.reversedFields[property]) {
+                        if (!noswap) {
+                            this.reversedFields[property] = this.reversedFields[property] == false;
+                        }
+                        this.setSort(property, "status", this.reversedFields[property]);
+                        if (this.reversedFields[property] == true) {
                             this.incidentList.reverse();
                         }
                     }
@@ -149,6 +186,7 @@ System.register(['lodash', 'moment', 'app/plugins/sdk', './editor'], function (_
                                     return item;
                                 });
                                 that.incidentList = data;
+                                that.callSort();
                             });
                         });
                     }
