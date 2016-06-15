@@ -60,6 +60,9 @@ You can query Bosun and display only incidents related to other information disp
 
 ![Incident query](https://raw.githubusercontent.com/bosun-monitor/bosun-grafana-app/master/src/screenshots/incident-query.png)
 
+The complete incident body can be shown without ever leaving the dashboard:
+
+![Incident query](https://raw.githubusercontent.com/bosun-monitor/bosun-grafana-app/master/src/screenshots/alert-body.png)
 
 ## External Dependencies
 
