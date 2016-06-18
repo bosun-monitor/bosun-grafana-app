@@ -38,7 +38,6 @@ System.register([], function (_export, _context) {
                     this.panelCtrl = $scope.ctrl;
                     this.panel = this.panelCtrl.panel;
                     this.$q = $q;
-
                     var self = this;
                     this.datasourceSrv = datasourceSrv;
                     var datasources = _.filter(this.datasourceSrv.getMetricSources(), function (datasource) {
@@ -53,6 +52,7 @@ System.register([], function (_export, _context) {
                         self.panelCtrl.refresh();
                     });
                     this.templateSrv = templateSrv;
+                    this.panel.showMutli = this.panel.showMutli;
                 }
 
                 _createClass(BosunIncidentListPanelEditorCtrl, [{

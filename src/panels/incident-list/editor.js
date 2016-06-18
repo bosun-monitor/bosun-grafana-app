@@ -4,7 +4,6 @@ class BosunIncidentListPanelEditorCtrl {
         this.panelCtrl = $scope.ctrl;
         this.panel = this.panelCtrl.panel;
         this.$q = $q;
-
         var self = this;
         this.datasourceSrv = datasourceSrv;
         var datasources = _.filter(this.datasourceSrv.getMetricSources(), datasource => {
@@ -19,6 +18,7 @@ class BosunIncidentListPanelEditorCtrl {
             self.panelCtrl.refresh();
         });
         this.templateSrv = templateSrv;
+        this.panel.showMutli = this.panel.showMutli;
     }
 
     datasourceChanged() {

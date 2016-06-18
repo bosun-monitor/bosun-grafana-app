@@ -35,6 +35,14 @@ The following functions can be used in a query for template variables:
 
 ![Templating variable](https://raw.githubusercontent.com/bosun-monitor/bosun-grafana-datasource/master/src/screenshots/templating.png)
 
+### Annotations
+Grafana can display annotations created inside Bosun, which may add more context to strange metrics behaviour.
+
+![Annotations query](https://raw.githubusercontent.com/bosun-monitor/bosun-grafana-app/master/src/screenshots/annotations-query.png)
+
+They can be filtered by any of the fields available in Bosun, and will be displayed like a standard annotation in Grafana.
+
+![Annotations in Grafana](https://raw.githubusercontent.com/bosun-monitor/bosun-grafana-app/master/src/screenshots/grafana-annotation.png)
 
 ### Query helper
 If you use Bosun to index data from OpenTSDB, it's possible to enable the Query Helper on data source configuration.
@@ -43,6 +51,20 @@ If you use Bosun to index data from OpenTSDB, it's possible to enable the Query 
 
 Doing that enables a helper tool that is able to generate queries using metadata from Bosun. This makes it a lot easier to write your expressions.
 
+## Incident List
+The plugin includes a custom panel that enable Grafana users to interact with Bosun incidents.
+
+![Incident Panel](https://raw.githubusercontent.com/bosun-monitor/bosun-grafana-app/master/src/screenshots/incident-list.png)
+
+You can query Bosun and display only incidents related to other information displayed on the dashboard, filtering by tags keys/value, incident status (Normal, Warning, Critical), alert name, among other fields. The user can then interact with incidents just like inside Bosun, taking actions and checking alert history.
+
+![Incident query](https://raw.githubusercontent.com/bosun-monitor/bosun-grafana-app/master/src/screenshots/incident-query.png)
+
+The complete incident body can be shown without ever leaving the dashboard:
+
+![Incident query](https://raw.githubusercontent.com/bosun-monitor/bosun-grafana-app/master/src/screenshots/alert-body.png)
+
 ## External Dependencies
 
 Besides Grafana, the plugin just needs a running Bosun instance. Because Bosun doesn't have support for [CORS headers](https://en.wikipedia.org/wiki/Cross-origin_resource_sharing), it may be easier to make it work in proxy mode.
+Bosun also needs a ElasticSearch backend in order for its annotations subsystem to work.

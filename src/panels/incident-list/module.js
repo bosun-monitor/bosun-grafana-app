@@ -33,8 +33,6 @@ export class BosunIncidentListCtrl extends MetricsPanelCtrl {
         });
     }
 
-
-
     onInitMetricsPanelEditMode() {
         this.fullscreen = true;
         this.addEditorTab('Options', bosunIncidentListPanelEditor, 2);
@@ -204,7 +202,8 @@ export class BosunIncidentListCtrl extends MetricsPanelCtrl {
     submitActionForm(incidents, action) {
         var self = this;
         if (!this.actionForm) {
-            self.$rootScope.appEvent('alert-error', ['Action Error', 'must fill out form fields'])
+            self.$rootScope.appEvent('alert-error', ['Action Error', 'must fill out form fields']);
+            return;
         }
         var actionForm = this.actionForm;
         var actionRequest = {
@@ -213,17 +212,20 @@ export class BosunIncidentListCtrl extends MetricsPanelCtrl {
             Message: actionForm.Message,
             Notify: actionForm.Notify == true,
         }
+        if (actionRequest.Message == "" && actionRequest.Notify == true) {
+            self.$rootScope.appEvent('alert-error', ['Action Error', 'must fill out message field when notifying']);
+            return;
+        }
         actionRequest.Keys = _.map(incidents, (incident) => {
             return incident.AlertName + incident.TagsString;
         });
         this.datasourceSrv.get(this.panel.datasource).
             then(datasource => {
                 datasource.submitAction(actionRequest).then(() =>
-                    self.refreshData().then()
+                    self.refreshData().then(() => {self.actionForm.Message = "";}) // clear message
                 )
             })
     }
-
 
     showBody(incident) {
         this.datasourceSrv.get(this.panel.datasource).
@@ -238,6 +240,22 @@ export class BosunIncidentListCtrl extends MetricsPanelCtrl {
                 })
             });
     }
+
+    // Enable selecting a range of checkboxes with shift-click
+    selectRange($event, idx) {
+        if ($event.shiftKey && this.$scope.lastChecked != undefined) {
+            // This makes the selection "flash" and then get removed
+            // not sure of a good way to prevent it
+            document.getSelection().removeAllRanges();
+            var start = Math.min(idx, this.$scope.lastChecked);
+            var end = Math.max(idx, this.$scope.lastChecked);
+            for (var i = start; i <= end; i++) {
+                this.incidentList[i].selected = true;
+            }
+        }
+        this.$scope.lastChecked = idx;
+    }
+
 }
 
 BosunIncidentListCtrl.templateUrl = 'panels/incident-list/module.html';

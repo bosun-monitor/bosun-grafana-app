@@ -312,6 +312,7 @@ System.register(['lodash', 'moment', 'app/plugins/sdk', './editor'], function (_
                         var self = this;
                         if (!this.actionForm) {
                             self.$rootScope.appEvent('alert-error', ['Action Error', 'must fill out form fields']);
+                            return;
                         }
                         var actionForm = this.actionForm;
                         var actionRequest = {
@@ -320,13 +321,20 @@ System.register(['lodash', 'moment', 'app/plugins/sdk', './editor'], function (_
                             Message: actionForm.Message,
                             Notify: actionForm.Notify == true
                         };
+                        if (actionRequest.Message == "" && actionRequest.Notify == true) {
+                            self.$rootScope.appEvent('alert-error', ['Action Error', 'must fill out message field when notifying']);
+                            return;
+                        }
                         actionRequest.Keys = _.map(incidents, function (incident) {
                             return incident.AlertName + incident.TagsString;
                         });
                         this.datasourceSrv.get(this.panel.datasource).then(function (datasource) {
                             datasource.submitAction(actionRequest).then(function () {
-                                return self.refreshData().then();
-                            });
+                                return self.refreshData().then(function () {
+                                    self.actionForm.Message = "";
+                                });
+                            } // clear message
+                            );
                         });
                     }
                 }, {
@@ -344,6 +352,21 @@ System.register(['lodash', 'moment', 'app/plugins/sdk', './editor'], function (_
                                 });
                             });
                         });
+                    }
+                }, {
+                    key: 'selectRange',
+                    value: function selectRange($event, idx) {
+                        if ($event.shiftKey && this.$scope.lastChecked != undefined) {
+                            // This makes the selection "flash" and then get removed
+                            // not sure of a good way to prevent it
+                            document.getSelection().removeAllRanges();
+                            var start = Math.min(idx, this.$scope.lastChecked);
+                            var end = Math.max(idx, this.$scope.lastChecked);
+                            for (var i = start; i <= end; i++) {
+                                this.incidentList[i].selected = true;
+                            }
+                        }
+                        this.$scope.lastChecked = idx;
                     }
                 }]);
 
