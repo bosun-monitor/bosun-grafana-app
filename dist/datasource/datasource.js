@@ -374,6 +374,7 @@ System.register(['app/core/table_model', 'moment'], function (_export, _context)
                     key: 'submitAction',
                     value: function submitAction(actionObj) {
                         var self = this;
+
                         return this.backendSrv.datasourceRequest({
                             url: this.url + '/api/action',
                             method: 'POST',

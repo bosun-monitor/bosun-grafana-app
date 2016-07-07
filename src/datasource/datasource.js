@@ -324,6 +324,7 @@ export class BosunDatasource {
 
     submitAction(actionObj) {
         var self = this;
+        
         return this.backendSrv.datasourceRequest({
             url: this.url + '/api/action',
             method: 'POST',

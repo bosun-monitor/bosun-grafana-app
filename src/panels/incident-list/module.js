@@ -208,7 +208,7 @@ export class BosunIncidentListCtrl extends MetricsPanelCtrl {
         var actionForm = this.actionForm;
         var actionRequest = {
             Type: action,
-            User: actionForm.User,
+            User: actionForm.User || self.user,
             Message: actionForm.Message,
             Notify: actionForm.Notify == true,
         }
