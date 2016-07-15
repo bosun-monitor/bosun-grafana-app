@@ -296,7 +296,8 @@ export class BosunDatasource {
         var self = this;
         var url = this.url + '/api/incidents/open';
         if (query) {
-            url += '?filter=' + encodeURIComponent(query)
+			var interpolatedQuery = this.templateSrv.replace(query, this.templateSrv.variables, 'pipe');
+            url += '?filter=' + encodeURIComponent(interpolatedQuery)
         }
         return this.backendSrv.datasourceRequest({
             url: url,
