@@ -1,6 +1,8 @@
 'use strict';
 
 System.register(['./datasource', './query_ctrl'], function (_export, _context) {
+  "use strict";
+
   var BosunDatasource, BosunDatasourceQueryCtrl, BosunConfigCtrl, BosunQueryOptionsCtrl, BosunAnnotationsQueryCtrl;
 
   function _classCallCheck(instance, Constructor) {
