@@ -223,7 +223,7 @@ export class BosunDatasource {
             }
             key += ":Empty"
         }
-        params[key] = fieldObject.value;
+        params[key] = this.templateSrv.replace(fieldObject.value, this.templateSrv.variables, 'pipe');
         return params
     }
 

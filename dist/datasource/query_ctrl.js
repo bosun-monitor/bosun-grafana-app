@@ -1,6 +1,8 @@
 'use strict';
 
 System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_export, _context) {
+  "use strict";
+
   var QueryCtrl, _createClass, BosunDatasourceQueryCtrl;
 
   function _classCallCheck(instance, Constructor) {

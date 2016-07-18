@@ -1,6 +1,8 @@
 'use strict';
 
 System.register(['app/core/table_model', 'moment'], function (_export, _context) {
+    "use strict";
+
     var TableModel, moment, _createClass, BosunDatasource;
 
     function _classCallCheck(instance, Constructor) {
@@ -268,7 +270,7 @@ System.register(['app/core/table_model', 'moment'], function (_export, _context)
                             }
                             key += ":Empty";
                         }
-                        params[key] = fieldObject.value;
+                        params[key] = this.templateSrv.replace(fieldObject.value, this.templateSrv.variables, 'pipe');
                         return params;
                     }
                 }, {
