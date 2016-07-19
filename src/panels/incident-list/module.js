@@ -137,7 +137,7 @@ export class BosunIncidentListCtrl extends MetricsPanelCtrl {
     showActions(incident) {
         var modalScope = this.$scope.$new();
         modalScope.actions = incident.Actions;
-        this.utilSrv.showModal(undefined, {
+        this.$rootScope.appEvent('show-modal', {
             src: "public/plugins/bosun-app/panels/incident-list/modal_actions.html",
             scope: modalScope
         });
@@ -146,7 +146,7 @@ export class BosunIncidentListCtrl extends MetricsPanelCtrl {
     showEvents(incident) {
         var modalScope = this.$scope.$new();
         modalScope.events = incident.Events.reverse();
-        this.utilSrv.showModal(undefined, {
+        this.$rootScope.appEvent('show-modal', {
             src: "public/plugins/bosun-app/panels/incident-list/modal_events.html",
             scope: modalScope
         });
@@ -193,7 +193,7 @@ export class BosunIncidentListCtrl extends MetricsPanelCtrl {
         var modalScope = this.$scope.$new();
         modalScope.incidents = incidents;
         modalScope.action = action;
-        this.utilSrv.showModal(undefined, {
+        this.$rootScope.appEvent('show-modal', {
             src: "public/plugins/bosun-app/panels/incident-list/modal_action.html",
             scope: modalScope
         });
@@ -233,7 +233,7 @@ export class BosunIncidentListCtrl extends MetricsPanelCtrl {
                 datasource.AlertBodyHTML(incident.AlertName + incident.TagsString).then(data => {
                     var modalScope = this.$rootScope.$new();
                     modalScope.bodyHTML = data;
-                    this.utilSrv.showModal(undefined, {
+                    this.$rootScope.appEvent('show-modal', {
                         src: "public/plugins/bosun-app/panels/incident-list/modal_body.html",
                         scope: modalScope
                     });
