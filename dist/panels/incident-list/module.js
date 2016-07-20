@@ -223,7 +223,7 @@ System.register(['lodash', 'moment', 'app/plugins/sdk', './editor'], function (_
                     value: function showActions(incident) {
                         var modalScope = this.$scope.$new();
                         modalScope.actions = incident.Actions;
-                        this.utilSrv.showModal(undefined, {
+                        this.$rootScope.appEvent('show-modal', {
                             src: "public/plugins/bosun-app/panels/incident-list/modal_actions.html",
                             scope: modalScope
                         });
@@ -233,7 +233,7 @@ System.register(['lodash', 'moment', 'app/plugins/sdk', './editor'], function (_
                     value: function showEvents(incident) {
                         var modalScope = this.$scope.$new();
                         modalScope.events = incident.Events.reverse();
-                        this.utilSrv.showModal(undefined, {
+                        this.$rootScope.appEvent('show-modal', {
                             src: "public/plugins/bosun-app/panels/incident-list/modal_events.html",
                             scope: modalScope
                         });
@@ -303,7 +303,7 @@ System.register(['lodash', 'moment', 'app/plugins/sdk', './editor'], function (_
                         var modalScope = this.$scope.$new();
                         modalScope.incidents = incidents;
                         modalScope.action = action;
-                        this.utilSrv.showModal(undefined, {
+                        this.$rootScope.appEvent('show-modal', {
                             src: "public/plugins/bosun-app/panels/incident-list/modal_action.html",
                             scope: modalScope
                         });
@@ -348,7 +348,7 @@ System.register(['lodash', 'moment', 'app/plugins/sdk', './editor'], function (_
                             datasource.AlertBodyHTML(incident.AlertName + incident.TagsString).then(function (data) {
                                 var modalScope = _this2.$rootScope.$new();
                                 modalScope.bodyHTML = data;
-                                _this2.utilSrv.showModal(undefined, {
+                                _this2.$rootScope.appEvent('show-modal', {
                                     src: "public/plugins/bosun-app/panels/incident-list/modal_body.html",
                                     scope: modalScope
                                 });
