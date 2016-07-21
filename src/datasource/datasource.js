@@ -8,6 +8,7 @@ export class BosunDatasource {
         this.url = instanceSettings.url;
         this.name = instanceSettings.name;
         this.showHelper = instanceSettings.jsonData.enableQueryHelper;
+        this.preRelease = instanceSettings.jsonData.enablePreReleaseFeatures;
         this.q = $q;
         this.backendSrv = backendSrv;
         this.templateSrv = templateSrv;

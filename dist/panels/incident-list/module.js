@@ -97,6 +97,9 @@ System.register(['lodash', 'moment', 'app/plugins/sdk', './editor'], function (_
                     backendSrv.get('/api/user').then(function (user) {
                         _this.user = user;
                     });
+                    _this.datasourceSrv.get(_this.panel.datasource).then(function (datasource) {
+                        _this.preRelease = datasource.preRelease;
+                    });
                     return _this;
                 }
 

@@ -8,6 +8,7 @@
         <div class="pull-right">
             <div class="gf-form" ng-if="ctrl.panel.showMulti || ctrl.fullscreen">
                 <select class="input-small width-8" style="height: 24px" ng-model="ctrl.selectedMultiAction">
+                                <option ng-if="ctrl.preRelease" value="note">add note</option>
                                 <option>ack</option>
                                 <option>close</option>
                                 <option>forget</option>
@@ -47,6 +48,7 @@
                     <td ng-bind="ctrl.fmtTime(i.LastAbnormalTime, true)" ng-class="ctrl.statusClass('text-', i.LastAbnormalStatus)"></td>
                     <td ng-bind="i.WorstStatus" ng-class="ctrl.statusClass('text-', i.WorstStatus)"></td>
                     <td>
+                        <a ng-if="ctrl.preRelease" class="btn btn-inverse btn-small" ng-click="ctrl.showActionForm(i, 'note')" target="_blank">Add Note </a>
                         <a ng-class="{'disabled': !i.NeedAck}" class="btn btn-inverse btn-small" ng-click="i.NeedAck && ctrl.showActionForm(i, 'ack')" target="_blank">Ack </a>
                         <a ng-class="{'disabled': i.CurrentStatus != 'normal'}" class="btn btn-inverse btn-small" ng-click="i.CurrentStatus == 'normal' && ctrl.showActionForm(i, 'close')"
                             target="_blank">Close </a>
