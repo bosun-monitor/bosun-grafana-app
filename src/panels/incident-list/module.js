@@ -31,6 +31,9 @@ export class BosunIncidentListCtrl extends MetricsPanelCtrl {
         backendSrv.get('/api/user').then(user => {
             this.user = user;
         });
+		this.datasourceSrv.get(this.panel.datasource).then(datasource => {
+			this.preRelease = datasource.preRelease;
+		});
     }
 
     onInitMetricsPanelEditMode() {
