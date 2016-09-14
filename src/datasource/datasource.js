@@ -89,6 +89,14 @@ export class BosunDatasource {
                 if (response.data.Type === 'number') {
                     result = response.config.datasource.makeTable(response.data.Results);
                 }
+                if (response.data.Type === 'table') {
+                    var table = new TableModel();
+                    table.columns = _.map(response.data.Results[0].Value.Columns, function (column) {
+                        return { "text": column };
+                    });
+                    table.rows = response.data.Results[0].Value.Rows;
+                    result = [table];
+                }
                 return { data: result };
             }
         });
@@ -297,7 +305,7 @@ export class BosunDatasource {
         var self = this;
         var url = this.url + '/api/incidents/open';
         if (query) {
-			var interpolatedQuery = this.templateSrv.replace(query, this.templateSrv.variables, 'pipe');
+            var interpolatedQuery = this.templateSrv.replace(query, this.templateSrv.variables, 'pipe');
             url += '?filter=' + encodeURIComponent(interpolatedQuery)
         }
         return this.backendSrv.datasourceRequest({
@@ -326,7 +334,7 @@ export class BosunDatasource {
 
     submitAction(actionObj) {
         var self = this;
-        
+
         return this.backendSrv.datasourceRequest({
             url: this.url + '/api/action',
             method: 'POST',
