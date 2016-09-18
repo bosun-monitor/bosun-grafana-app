@@ -1,8 +1,6 @@
 'use strict';
 
 System.register(['lodash', 'moment', 'app/plugins/sdk', './editor'], function (_export, _context) {
-    "use strict";
-
     var _, moment, MetricsPanelCtrl, bosunIncidentListPanelEditor, _createClass, statusMap, BosunIncidentListCtrl;
 
     function _classCallCheck(instance, Constructor) {

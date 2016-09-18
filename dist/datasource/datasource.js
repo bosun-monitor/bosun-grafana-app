@@ -1,8 +1,6 @@
 'use strict';
 
 System.register(['app/core/table_model', 'moment'], function (_export, _context) {
-    "use strict";
-
     var TableModel, moment, _createClass, BosunDatasource;
 
     function _classCallCheck(instance, Constructor) {
@@ -129,6 +127,14 @@ System.register(['app/core/table_model', 'moment'], function (_export, _context)
                                 }
                                 if (response.data.Type === 'number') {
                                     result = response.config.datasource.makeTable(response.data.Results);
+                                }
+                                if (response.data.Type === 'table') {
+                                    var table = new TableModel();
+                                    table.columns = _.map(response.data.Results[0].Value.Columns, function (column) {
+                                        return { "text": column };
+                                    });
+                                    table.rows = response.data.Results[0].Value.Rows;
+                                    result = [table];
                                 }
                                 return { data: result };
                             }
