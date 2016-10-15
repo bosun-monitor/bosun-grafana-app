@@ -283,10 +283,18 @@ System.register(['app/core/table_model', 'moment'], function (_export, _context)
                 }, {
                     key: 'annotationQuery',
                     value: function annotationQuery(options) {
+                        // http://stackoverflow.com/questions/2998784/how-to-output-integers-with-leading-zeros-in-javascript
+                        var pad = function pad(num, size) {
+                            var s = num + "";
+                            while (s.length < size) {
+                                s = "0" + s;
+                            }return s;
+                        };
                         var annotation = options.annotation;
                         var params = {};
                         params.StartDate = options.range.from.unix();
                         params.EndDate = options.range.to.unix();
+                        var annotateUrl = this.annotateUrl;
                         params = this._processAnnotationQueryParam(annotation, "Source", annotation.Source, params);
                         params = this._processAnnotationQueryParam(annotation, "Host", annotation.Host, params);
                         params = this._processAnnotationQueryParam(annotation, "CreationUser", annotation.CreationUser, params);
@@ -307,6 +315,11 @@ System.register(['app/core/table_model', 'moment'], function (_export, _context)
                                 var events = [];
                                 _.each(response.data, function (a) {
                                     var text = [];
+                                    var duration = moment.duration(moment(a.EndDate).diff(a.StartDate));
+                                    var hours = duration.hours();
+                                    var minutes = duration.minutes();
+                                    var seconds = duration.seconds();
+                                    text.push("Duration: " + pad(hours, 3) + ":" + pad(minutes, 2) + ":" + pad(seconds, 2));
                                     if (a.Source) {
                                         text.push("Source: " + a.Source);
                                     }
@@ -319,12 +332,16 @@ System.register(['app/core/table_model', 'moment'], function (_export, _context)
                                     if (a.Owner) {
                                         text.push("Owner: " + a.Owner);
                                     }
+                                    if (a.Category) {
+                                        text.push("Category: " + a.Category);
+                                    }
                                     if (a.Url) {
-                                        text.push('<a href="' + a.Url + '">' + a.Url.substring(0, 50) + '</a>');
+                                        text.push('<a href="' + a.Url + '">' + a.Url.substring(0, 40) + '</a>');
                                     }
                                     if (a.Message) {
                                         text.push(a.Message);
                                     }
+                                    text.push('<a target="_blank" href="' + annotateUrl + '/annotation?id=' + encodeURIComponent(a.Id) + '">Edit in Bosun UI</a>');
                                     var grafanaAnnotation = {
                                         annotation: annotation,
                                         time: moment(a.StartDate).utc().unix() * 1000,

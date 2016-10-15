@@ -21,8 +21,8 @@
       {"name": "GitHub", "url": "https://github.com/bosun-monitor/bosun-grafana-app"},
       {"name": "MIT License", "url": "https://github.com/bosun-monitor/bosun-grafana-app/blob/master/LICENSE"}
     ],
-    "version": "0.0.26",
-    "updated": "2016-07-21"
+    "version": "0.0.27",
+    "updated": "2016-10-15"
   },
 
   "includes": [
