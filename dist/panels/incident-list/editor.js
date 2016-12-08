@@ -1,6 +1,8 @@
 'use strict';
 
 System.register([], function (_export, _context) {
+    "use strict";
+
     var _createClass, BosunIncidentListPanelEditorCtrl;
 
     function _classCallCheck(instance, Constructor) {
@@ -8,6 +10,17 @@ System.register([], function (_export, _context) {
             throw new TypeError("Cannot call a class as a function");
         }
     }
+
+    function bosunIncidentListPanelEditor() {
+        return {
+            restrict: 'E',
+            scope: true,
+            templateUrl: 'public/plugins/bosun-app/panels/incident-list/editor.html',
+            controller: BosunIncidentListPanelEditorCtrl
+        };
+    }
+
+    _export('bosunIncidentListPanelEditor', bosunIncidentListPanelEditor);
 
     return {
         setters: [],
@@ -64,17 +77,6 @@ System.register([], function (_export, _context) {
 
                 return BosunIncidentListPanelEditorCtrl;
             }();
-
-            function bosunIncidentListPanelEditor() {
-                return {
-                    restrict: 'E',
-                    scope: true,
-                    templateUrl: 'public/plugins/bosun-app/panels/incident-list/editor.html',
-                    controller: BosunIncidentListPanelEditorCtrl
-                };
-            }
-
-            _export('bosunIncidentListPanelEditor', bosunIncidentListPanelEditor);
         }
     };
 });

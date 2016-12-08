@@ -263,6 +263,5 @@ export class BosunIncidentListCtrl extends MetricsPanelCtrl {
 BosunIncidentListCtrl.templateUrl = 'panels/incident-list/module.html';
 
 export {
-    BosunIncidentListCtrl,
     BosunIncidentListCtrl as PanelCtrl
 };

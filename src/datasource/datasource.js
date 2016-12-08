@@ -9,6 +9,7 @@ export class BosunDatasource {
         this.name = instanceSettings.name;
         this.showHelper = instanceSettings.jsonData.enableQueryHelper;
         this.preRelease = instanceSettings.jsonData.enablePreReleaseFeatures;
+        this.authToken = instanceSettings.jsonData.authToken;
         this.q = $q;
         this.backendSrv = backendSrv;
         this.templateSrv = templateSrv;
@@ -73,7 +74,7 @@ export class BosunDatasource {
         var exprDate = options.range.to.utc().format('YYYY-MM-DD');
         var exprTime = options.range.to.utc().format('HH:mm:ss');
         var url = this.url + '/api/expr?date=' + encodeURIComponent(exprDate) + '&time=' + encodeURIComponent(exprTime);
-        return this.backendSrv.datasourceRequest({
+        return this.bosunRequest({
             url: url,
             method: 'POST',
             data: query,
@@ -103,7 +104,7 @@ export class BosunDatasource {
     }
 
     _metricsStartWith(metricRoot) {
-        return this.backendSrv.datasourceRequest({
+        return this.bosunRequest({
             url: this.url + "/api/metric",
             method: 'GET',
             datasource: this
@@ -116,7 +117,7 @@ export class BosunDatasource {
     }
 
     _tagKeysForMetric(metric) {
-        return this.backendSrv.datasourceRequest({
+        return this.bosunRequest({
             url: this.url + "/api/tagk/" + metric,
             method: 'GET',
             datasource: this
@@ -126,7 +127,7 @@ export class BosunDatasource {
     }
 
     _tagValuesForMetricAndTagKey(metric, key) {
-        return this.backendSrv.datasourceRequest({
+        return this.bosunRequest({
             url: this.url + "/api/tagv/" + key + "/" + metric,
             method: 'GET',
             datasource: this
@@ -136,7 +137,7 @@ export class BosunDatasource {
     }
 
     _metricMetadata(metric) {
-        return this.backendSrv.datasourceRequest({
+        return this.bosunRequest({
             url: this.url + "/api/metadata/metrics?metric=" + metric,
             method: 'GET',
             datasource: this
@@ -260,7 +261,7 @@ export class BosunDatasource {
             url += jQuery.param(params);
         }
         var rawUrl = this.rawUrl;
-        return this.backendSrv.datasourceRequest({
+        return this.bosunRequest({
             url: url,
             method: 'GET',
             datasource: this
@@ -325,7 +326,7 @@ export class BosunDatasource {
             var interpolatedQuery = this.templateSrv.replace(query, this.templateSrv.variables, 'pipe');
             url += '?filter=' + encodeURIComponent(interpolatedQuery)
         }
-        return this.backendSrv.datasourceRequest({
+        return this.bosunRequest({
             url: url,
             method: 'GET',
             transformResponse: this._plainTextResponseTransform
@@ -339,7 +340,7 @@ export class BosunDatasource {
     }
 
     AlertBodyHTML(alertKey) {
-        return this.backendSrv.datasourceRequest({
+        return this.bosunRequest({
             url: this.url + '/api/status?ak=' + encodeURIComponent(alertKey),
             method: 'GET'
         }).then(response => {
@@ -351,26 +352,36 @@ export class BosunDatasource {
 
     submitAction(actionObj) {
         var self = this;
-
-        return this.backendSrv.datasourceRequest({
+        return this.bosunRequest({
             url: this.url + '/api/action',
             method: 'POST',
             data: actionObj,
-            datasource: this,
-            transformResponse: this._plainTextResponseTransform
+            datasource: this
         }).then((data) => {
+            debugger;
             self.$rootScope.appEvent('alert-success', ['Incident Action Succeeded', ''])
         }, (error) => {
-            self.$rootScope.appEvent('alert-error', ['Incident Action Error', error.data.message]);
+            debugger;
+            self.$rootScope.appEvent('alert-error', ['Incident Action Error', error]);
         })
+    }
+
+
+    bosunRequest(data) {
+        if (this.authToken) {
+            data.headers = {
+                "X-Access-Token": this.authToken
+            };
+        }
+        return this.backendSrv.datasourceRequest(data);
     }
 
     // Required
     // Used for testing datasource in datasource configuration pange
     testDatasource() {
-        return this.backendSrv.datasourceRequest({
+        return this.bosunRequest({
             url: this.url + '/',
-            method: 'GET'
+            method: 'GET',
         }).then(response => {
             if (response.status === 200) {
                 return { status: "success", message: "Data source is working", title: "Success" };
@@ -378,4 +389,5 @@ export class BosunDatasource {
         });
     }
 }
+
 
