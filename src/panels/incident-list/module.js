@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import moment from 'moment';
-import {MetricsPanelCtrl} from 'app/plugins/sdk';
-import {bosunIncidentListPanelEditor} from './editor';
+import { MetricsPanelCtrl } from 'app/plugins/sdk';
+import { bosunIncidentListPanelEditor } from './editor';
 
 var statusMap = {
     "normal": 0,
@@ -27,17 +27,16 @@ export class BosunIncidentListCtrl extends MetricsPanelCtrl {
         this.bodyHTML = "";
         this.reversedFields = {};
         this.showHelp = 0;
-        this.storeId = dashboardSrv.currentDashboard.id + "-" + this.panel.id;
+        this.storeId = dashboardSrv.getCurrent().id + "-" + this.panel.id;
         backendSrv.get('/api/user').then(user => {
             this.user = user;
         });
-		this.datasourceSrv.get(this.panel.datasource).then(datasource => {
-			this.preRelease = datasource.preRelease;
-		});
+        this.datasourceSrv.get(this.panel.datasource).then(datasource => {
+            this.preRelease = datasource.preRelease;
+        });
     }
 
     onInitMetricsPanelEditMode() {
-        this.fullscreen = true;
         this.addEditorTab('Options', bosunIncidentListPanelEditor, 2);
     }
 
@@ -225,7 +224,7 @@ export class BosunIncidentListCtrl extends MetricsPanelCtrl {
         this.datasourceSrv.get(this.panel.datasource).
             then(datasource => {
                 datasource.submitAction(actionRequest).then(() =>
-                    self.refreshData().then(() => {self.actionForm.Message = "";}) // clear message
+                    self.refreshData().then(() => { self.actionForm.Message = ""; }) // clear message
                 )
             })
     }
@@ -264,6 +263,6 @@ export class BosunIncidentListCtrl extends MetricsPanelCtrl {
 BosunIncidentListCtrl.templateUrl = 'panels/incident-list/module.html';
 
 export {
-BosunIncidentListCtrl,
-BosunIncidentListCtrl as PanelCtrl
+    BosunIncidentListCtrl,
+    BosunIncidentListCtrl as PanelCtrl
 };

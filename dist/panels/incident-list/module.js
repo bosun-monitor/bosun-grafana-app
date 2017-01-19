@@ -91,7 +91,7 @@ System.register(['lodash', 'moment', 'app/plugins/sdk', './editor'], function (_
                     _this.bodyHTML = "";
                     _this.reversedFields = {};
                     _this.showHelp = 0;
-                    _this.storeId = dashboardSrv.currentDashboard.id + "-" + _this.panel.id;
+                    _this.storeId = dashboardSrv.getCurrent().id + "-" + _this.panel.id;
                     backendSrv.get('/api/user').then(function (user) {
                         _this.user = user;
                     });
@@ -104,7 +104,6 @@ System.register(['lodash', 'moment', 'app/plugins/sdk', './editor'], function (_
                 _createClass(BosunIncidentListCtrl, [{
                     key: 'onInitMetricsPanelEditMode',
                     value: function onInitMetricsPanelEditMode() {
-                        this.fullscreen = true;
                         this.addEditorTab('Options', bosunIncidentListPanelEditor, 2);
                     }
                 }, {
