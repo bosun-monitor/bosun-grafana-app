@@ -1,6 +1,8 @@
 'use strict';
 
 System.register(['app/core/table_model', 'moment'], function (_export, _context) {
+    "use strict";
+
     var TableModel, moment, _createClass, BosunDatasource;
 
     function _classCallCheck(instance, Constructor) {
@@ -44,6 +46,7 @@ System.register(['app/core/table_model', 'moment'], function (_export, _context)
                     this.name = instanceSettings.name;
                     this.showHelper = instanceSettings.jsonData.enableQueryHelper;
                     this.preRelease = instanceSettings.jsonData.enablePreReleaseFeatures;
+                    this.authToken = instanceSettings.jsonData.authToken;
                     this.q = $q;
                     this.backendSrv = backendSrv;
                     this.templateSrv = templateSrv;
@@ -112,7 +115,7 @@ System.register(['app/core/table_model', 'moment'], function (_export, _context)
                         var exprDate = options.range.to.utc().format('YYYY-MM-DD');
                         var exprTime = options.range.to.utc().format('HH:mm:ss');
                         var url = this.url + '/api/expr?date=' + encodeURIComponent(exprDate) + '&time=' + encodeURIComponent(exprTime);
-                        return this.backendSrv.datasourceRequest({
+                        return this.bosunRequest({
                             url: url,
                             method: 'POST',
                             data: query,
@@ -143,7 +146,7 @@ System.register(['app/core/table_model', 'moment'], function (_export, _context)
                 }, {
                     key: '_metricsStartWith',
                     value: function _metricsStartWith(metricRoot) {
-                        return this.backendSrv.datasourceRequest({
+                        return this.bosunRequest({
                             url: this.url + "/api/metric",
                             method: 'GET',
                             datasource: this
@@ -157,7 +160,7 @@ System.register(['app/core/table_model', 'moment'], function (_export, _context)
                 }, {
                     key: '_tagKeysForMetric',
                     value: function _tagKeysForMetric(metric) {
-                        return this.backendSrv.datasourceRequest({
+                        return this.bosunRequest({
                             url: this.url + "/api/tagk/" + metric,
                             method: 'GET',
                             datasource: this
@@ -168,7 +171,7 @@ System.register(['app/core/table_model', 'moment'], function (_export, _context)
                 }, {
                     key: '_tagValuesForMetricAndTagKey',
                     value: function _tagValuesForMetricAndTagKey(metric, key) {
-                        return this.backendSrv.datasourceRequest({
+                        return this.bosunRequest({
                             url: this.url + "/api/tagv/" + key + "/" + metric,
                             method: 'GET',
                             datasource: this
@@ -179,7 +182,7 @@ System.register(['app/core/table_model', 'moment'], function (_export, _context)
                 }, {
                     key: '_metricMetadata',
                     value: function _metricMetadata(metric) {
-                        return this.backendSrv.datasourceRequest({
+                        return this.bosunRequest({
                             url: this.url + "/api/metadata/metrics?metric=" + metric,
                             method: 'GET',
                             datasource: this
@@ -306,7 +309,7 @@ System.register(['app/core/table_model', 'moment'], function (_export, _context)
                             url += jQuery.param(params);
                         }
                         var rawUrl = this.rawUrl;
-                        return this.backendSrv.datasourceRequest({
+                        return this.bosunRequest({
                             url: url,
                             method: 'GET',
                             datasource: this
@@ -371,7 +374,7 @@ System.register(['app/core/table_model', 'moment'], function (_export, _context)
                             var interpolatedQuery = this.templateSrv.replace(query, this.templateSrv.variables, 'pipe');
                             url += '?filter=' + encodeURIComponent(interpolatedQuery);
                         }
-                        return this.backendSrv.datasourceRequest({
+                        return this.bosunRequest({
                             url: url,
                             method: 'GET',
                             transformResponse: this._plainTextResponseTransform
@@ -388,7 +391,7 @@ System.register(['app/core/table_model', 'moment'], function (_export, _context)
                     value: function AlertBodyHTML(alertKey) {
                         var _this = this;
 
-                        return this.backendSrv.datasourceRequest({
+                        return this.bosunRequest({
                             url: this.url + '/api/status?ak=' + encodeURIComponent(alertKey),
                             method: 'GET'
                         }).then(function (response) {
@@ -401,23 +404,33 @@ System.register(['app/core/table_model', 'moment'], function (_export, _context)
                     key: 'submitAction',
                     value: function submitAction(actionObj) {
                         var self = this;
-
-                        return this.backendSrv.datasourceRequest({
+                        return this.bosunRequest({
                             url: this.url + '/api/action',
                             method: 'POST',
                             data: actionObj,
-                            datasource: this,
-                            transformResponse: this._plainTextResponseTransform
+                            datasource: this
                         }).then(function (data) {
+                            debugger;
                             self.$rootScope.appEvent('alert-success', ['Incident Action Succeeded', '']);
                         }, function (error) {
-                            self.$rootScope.appEvent('alert-error', ['Incident Action Error', error.data.message]);
+                            debugger;
+                            self.$rootScope.appEvent('alert-error', ['Incident Action Error', error]);
                         });
+                    }
+                }, {
+                    key: 'bosunRequest',
+                    value: function bosunRequest(data) {
+                        if (this.authToken) {
+                            data.headers = {
+                                "X-Access-Token": this.authToken
+                            };
+                        }
+                        return this.backendSrv.datasourceRequest(data);
                     }
                 }, {
                     key: 'testDatasource',
                     value: function testDatasource() {
-                        return this.backendSrv.datasourceRequest({
+                        return this.bosunRequest({
                             url: this.url + '/',
                             method: 'GET'
                         }).then(function (response) {

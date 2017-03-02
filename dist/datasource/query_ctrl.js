@@ -1,6 +1,8 @@
 'use strict';
 
 System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_export, _context) {
+  "use strict";
+
   var QueryCtrl, _createClass, BosunDatasourceQueryCtrl;
 
   function _classCallCheck(instance, Constructor) {
@@ -62,7 +64,7 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
         function BosunDatasourceQueryCtrl($scope, $injector, uiSegmentSrv) {
           _classCallCheck(this, BosunDatasourceQueryCtrl);
 
-          var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(BosunDatasourceQueryCtrl).call(this, $scope, $injector));
+          var _this = _possibleConstructorReturn(this, (BosunDatasourceQueryCtrl.__proto__ || Object.getPrototypeOf(BosunDatasourceQueryCtrl)).call(this, $scope, $injector));
 
           _this.scope = $scope;
           _this.queryHelper = {};

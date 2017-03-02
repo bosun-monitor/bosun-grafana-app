@@ -1,6 +1,8 @@
 'use strict';
 
 System.register(['lodash', 'moment', 'app/plugins/sdk', './editor'], function (_export, _context) {
+    "use strict";
+
     var _, moment, MetricsPanelCtrl, bosunIncidentListPanelEditor, _createClass, statusMap, BosunIncidentListCtrl;
 
     function _classCallCheck(instance, Constructor) {
@@ -69,13 +71,13 @@ System.register(['lodash', 'moment', 'app/plugins/sdk', './editor'], function (_
                 "unknown": 3
             };
 
-            _export('PanelCtrl', _export('BosunIncidentListCtrl', _export('BosunIncidentListCtrl', BosunIncidentListCtrl = function (_MetricsPanelCtrl) {
+            _export('PanelCtrl', _export('BosunIncidentListCtrl', BosunIncidentListCtrl = function (_MetricsPanelCtrl) {
                 _inherits(BosunIncidentListCtrl, _MetricsPanelCtrl);
 
                 function BosunIncidentListCtrl($scope, $injector, $rootScope, $window, datasourceSrv, templateSrv, utilSrv, backendSrv, dashboardSrv) {
                     _classCallCheck(this, BosunIncidentListCtrl);
 
-                    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(BosunIncidentListCtrl).call(this, $scope, $injector));
+                    var _this = _possibleConstructorReturn(this, (BosunIncidentListCtrl.__proto__ || Object.getPrototypeOf(BosunIncidentListCtrl)).call(this, $scope, $injector));
 
                     var self = _this;
                     _this.panelCtrl = $scope.ctrl;
@@ -373,13 +375,11 @@ System.register(['lodash', 'moment', 'app/plugins/sdk', './editor'], function (_
                 }]);
 
                 return BosunIncidentListCtrl;
-            }(MetricsPanelCtrl))));
+            }(MetricsPanelCtrl)));
 
             _export('BosunIncidentListCtrl', BosunIncidentListCtrl);
 
             BosunIncidentListCtrl.templateUrl = 'panels/incident-list/module.html';
-
-            _export('BosunIncidentListCtrl', BosunIncidentListCtrl);
 
             _export('PanelCtrl', BosunIncidentListCtrl);
         }
