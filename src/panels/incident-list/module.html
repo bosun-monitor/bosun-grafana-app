@@ -26,8 +26,8 @@
                     <th ng-click="ctrl.sortIncidentsByStatus('LastAbnormalStatus')">Last Abnormal</th>
                     <th ng-click="ctrl.sortIncidents('LastAbnormalTime')">Last Abnormal Time</th>
                     <th ng-click="ctrl.sortIncidentsByStatus('WorstStatus')">Worst</th>
-                    <th>Actions</th>
                     <th>Show Details</th>
+                    <th ng-if="ctrl.panel.showActions">Actions</th>
                     <th ng-if="ctrl.panel.showMulti || ctrl.fullscreen">Action</th>
                 </tr>
             </thead>
@@ -48,17 +48,17 @@
                     <td ng-bind="ctrl.fmtTime(i.LastAbnormalTime, true)" ng-class="ctrl.statusClass('text-', i.LastAbnormalStatus)"></td>
                     <td ng-bind="i.WorstStatus" ng-class="ctrl.statusClass('text-', i.WorstStatus)"></td>
                     <td>
+                        <a class="btn btn-inverse btn-small" ng-click="ctrl.showActions(i)">Actions</a>
+                        <a class="btn btn-inverse btn-small" ng-click="ctrl.showBody(i)">Body</a>
+                        <a class="btn btn-inverse btn-small" ng-click="ctrl.showEvents(i)">Events</a>
+                    </td>
+                    <td ng-if="ctrl.panel.showActions">
                         <a ng-if="ctrl.preRelease" class="btn btn-inverse btn-small" ng-click="ctrl.showActionForm(i, 'note')" target="_blank">Add Note </a>
                         <a ng-class="{'disabled': !i.NeedAck}" class="btn btn-inverse btn-small" ng-click="i.NeedAck && ctrl.showActionForm(i, 'ack')" target="_blank">Ack </a>
                         <a ng-class="{'disabled': i.CurrentStatus != 'normal'}" class="btn btn-inverse btn-small" ng-click="i.CurrentStatus == 'normal' && ctrl.showActionForm(i, 'close')"
                             target="_blank">Close </a>
                         <a ng-class="{'disabled': i.CurrentStatus != 'unknown'}" class="btn btn-inverse btn-small" ng-click="i.CurrentStatus == 'unknown' && ctrl.showActionForm(i, 'forget')"
                             target="_blank">Forget </a>
-                    </td>
-                    <td>
-                        <a class="btn btn-inverse btn-small" ng-click="ctrl.showActions(i)">Actions</a>
-                        <a class="btn btn-inverse btn-small" ng-click="ctrl.showBody(i)">Body</a>
-                        <a class="btn btn-inverse btn-small" ng-click="ctrl.showEvents(i)">Events</a>
                     </td>
                     <td ng-if="ctrl.panel.showMulti || ctrl.fullscreen">
                         <editor-checkbox model="i.selected" text="" ng-click="ctrl.selectRange($event, idx)"></editor-checkbox>
