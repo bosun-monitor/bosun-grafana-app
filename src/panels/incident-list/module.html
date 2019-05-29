@@ -23,8 +23,8 @@
                 <tr>
                     <th ng-click="ctrl.sortIncidents('Subject')">Subject of Last Abnormal Status (if not unknown)</th>
                     <th ng-click="ctrl.sortIncidentsByStatus('CurrentStatus')">Current</th>
-                    <th ng-click="ctrl.sortIncidentsByStatus('LastAbnormalStatus')">Last Abnormal</th>
-                    <th ng-click="ctrl.sortIncidents('LastAbnormalTime')">Last Abnormal Time</th>
+                    <th ng-if="ctrl.panel.showAbnormalTime" ng-click="ctrl.sortIncidentsByStatus('LastAbnormalStatus')">Last Abnormal</th>
+                    <th ng-if="ctrl.panel.showAbnormalTime" ng-click="ctrl.sortIncidents('LastAbnormalTime')">Last Abnormal Time</th>
                     <th ng-click="ctrl.sortIncidentsByStatus('WorstStatus')">Worst</th>
                     <th>Show Details</th>
                     <th ng-if="ctrl.panel.showActions">Actions</th>
@@ -44,8 +44,8 @@
 
                     </td>
                     <td ng-bind="i.CurrentStatus" ng-class="ctrl.statusClass('text-', i.CurrentStatus)"></td>
-                    <td ng-bind="i.LastAbnormalStatus" ng-class="ctrl.statusClass('text-', i.LastAbnormalStatus)"></td>
-                    <td ng-bind="ctrl.fmtTime(i.LastAbnormalTime, true)" ng-class="ctrl.statusClass('text-', i.LastAbnormalStatus)"></td>
+                    <td ng-if="ctrl.panel.showAbnormalTime" ng-bind="i.LastAbnormalStatus" ng-class="ctrl.statusClass('text-', i.LastAbnormalStatus)"></td>
+                    <td ng-if="ctrl.panel.showAbnormalTime" ng-bind="ctrl.fmtTime(i.LastAbnormalTime, true)" ng-class="ctrl.statusClass('text-', i.LastAbnormalStatus)"></td>
                     <td ng-bind="i.WorstStatus" ng-class="ctrl.statusClass('text-', i.WorstStatus)"></td>
                     <td>
                         <a class="btn btn-inverse btn-small" ng-click="ctrl.showActions(i)">Actions</a>
