@@ -27,6 +27,12 @@ module.exports = function(grunt) {
         src: ['img/**/*'],
         dest: 'dist/src/'
       },
+      externals: {
+        cwd: 'src',
+        expand: true,
+        src: ['**/external/*'],
+        dest: 'dist'
+      }
     },
 
     watch: {
@@ -40,7 +46,7 @@ module.exports = function(grunt) {
     babel: {
       options: {
         sourceMap: true,
-        presets:  ["es2015"],
+        presets:  ["@babel/preset-env"],
         plugins:  ["transform-es2015-modules-systemjs"]
       },
       dist: {
@@ -56,5 +62,5 @@ module.exports = function(grunt) {
 
   });
 
-  grunt.registerTask('default', ['clean', 'copy:src_to_dist', 'copy:pluginDef', 'copy:img_to_dist', 'babel']);
+  grunt.registerTask('default', ['clean', 'copy:src_to_dist', 'copy:pluginDef', 'copy:img_to_dist', 'copy:externals', 'babel']);
 };
