@@ -4,6 +4,7 @@ import moment from 'moment';
 export class BosunDatasource {
     constructor(instanceSettings, $q, backendSrv, templateSrv, $sce, $rootScope) {
         this.annotateUrl = instanceSettings.jsonData.annotateUrl;
+        this.openTSDBUrl  = instanceSettings.jsonData.openTSDBUrl;
         this.type = instanceSettings.type;
         this.url = instanceSettings.url;
         this.name = instanceSettings.name;
@@ -74,6 +75,7 @@ export class BosunDatasource {
         var exprDate = options.range.to.utc().format('YYYY-MM-DD');
         var exprTime = options.range.to.utc().format('HH:mm:ss');
         var url = this.url + '/api/expr?date=' + encodeURIComponent(exprDate) + '&time=' + encodeURIComponent(exprTime);
+        this.postQuery = query;
         return this.bosunRequest({
             url: url,
             method: 'POST',
@@ -188,7 +190,6 @@ export class BosunDatasource {
                 return;
             }
             var query = {};
-
             query = this.templateSrv.replace(target.expr, options.scopedVars, 'pipe');
             query = query.replace(/\$start/g, secondsAgo);
             query = query.replace(/\$ds/g, options.interval);
@@ -310,7 +311,7 @@ export class BosunDatasource {
         });
     }
 
-    // Since the API response is not JSON, we need a transform interceptor to 
+    // Since the API response is not JSON, we need a transform interceptor to
     // handle a text response. Otherwise we just get i.e. 'Internal Server Error'
     _plainTextResponseTransform(data, headers) {
         if (headers("content-type").includes("text/plain")) {
