@@ -88,10 +88,13 @@ function addTagsToQuery(constructedQuery, orderedVariablesList, index, tagType) 
       } else {
         onFirstTag = false;
       }
-      constructedQuery +=
-        orderedVariablesList[index][tagType + "tagBoxes"][tagMapping]["key"]
-        + "="
-        + orderedVariablesList[index][tagType + "tagBoxes"][tagMapping]["value"]
+      if(orderedVariablesList[index][tagType + "tagBoxes"][tagMapping]["key"]
+        && orderedVariablesList[index][tagType + "tagBoxes"][tagMapping]["value"]){
+        constructedQuery +=
+          orderedVariablesList[index][tagType + "tagBoxes"][tagMapping]["key"]
+          + "="
+          + orderedVariablesList[index][tagType + "tagBoxes"][tagMapping]["value"]
+      }
     }
   }
   return constructedQuery;

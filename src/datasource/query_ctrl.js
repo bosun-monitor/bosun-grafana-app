@@ -154,6 +154,7 @@ export class BosunDatasourceQueryCtrl extends QueryCtrl {
     }).catch(function (error) {
       throw error;
     });
+    this.updateFinalQuery(this.target.finalQuery);
     return req
   }
 
