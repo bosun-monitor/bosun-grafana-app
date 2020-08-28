@@ -111,7 +111,11 @@ Add the following to datasources.yml in Grafana to provide the plugin with a sui
     jsonData:
       openTSDBUrl: <OpenTSDB URL>
 ```
-Autocompletion suggestions for metrics are taken from the openTSDBUrl parameter provided. To prevent CORS errors, run the following:
+Autocompletion suggestions for metrics are taken from the OpenTSDB instance addressed by the provided openTSDBUrl parameter. To prevent CORS errors its recommended to install Local CORS Proxy:
+
+`https://github.com/garmeeh/local-cors-proxy`
+
+ Then run the following:
 
 `lcp --proxyUrl <openTSDB URL>`
 
