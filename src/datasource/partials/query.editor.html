@@ -1,91 +1,268 @@
 <query-editor-row query-ctrl="ctrl">
-    <div class="gf-form-inline" style="align-items:flex-start;">
-        <div class="gf-form" style="width:80%;align-items:flex-start;">
+
+  <ul id="allVariables">
+    <li ng-repeat="(id, variable) in ctrl.target.variables" id="{{variable.id}}">
+      <div ng-if="variable.type == 'variable'">
+        <div class="gf-form" style="width:80%;align-items:flex-start;margin-bottom:15px;">
+          <label class="gf-form-label query-keyword">
+            Variable
+          </label>
+          <input
+            class="gf-form-input" rows="1" ng-model="variable.inputName" spellcheck="false" placeholder="variable name" data-min-length=0 data-items=150>
+          <input
+            class="gf-form-input" rows="1" ng-model="variable.inputValue" spellcheck='false' placeholder='value' data-min-length=0 data-items=150r>
+          <a class="gf-form-label" href="https://github.com/bosun-monitor/bosun-grafana-app#query-templating">
+            Help <i class="fa fa-question-circle"></i>
+          </a>
+          <button class="gf-form-label" ng-click="ctrl.deleteVariable(variable.id);">
+            <i class="fa fa-fw fa-trash"></i>
+          </button>
+        </div>
+
+      </div>
+
+      <div ng-if="variable.type == 'queryVariable'">
+        <div id="query-variable-{{$index}}" class="gf-form-inline" style="align-items:flex-start; margin-bottom: 15px">
+          <div class="gf-form" style="width:100%;align-items:flex-start;">
             <label class="gf-form-label query-keyword">
-                Query:<tip>You can enter any Bosun query here</tip>
+              Variable Name
             </label>
-            <textarea class="gf-form-input" rows="5" ng-model="ctrl.target.expr" spellcheck='false' placeholder='q("avg:$ds-avg:rate:os.cpu{host=*bosun*}", "$start", "")'
-                data-min-length=0 data-items=150 ng-model-onblur ng-change="ctrl.onChangeInternal()">
-             </textarea>
+            <input
+              class="gf-form-input" rows="1" ng-model="variable.inputValue" spellcheck="false" placeholder="query variable name" data-min-length=0 data-items=150 ng-change="ctrl.updateFinalQuery(ctrl.target.finalQuery)">
+            <label class="gf-form-label query-keyword">
+              Metric
+            </label>
+            <input list="responseSuggestions"
+                   class="gf-form-input" rows="1" ng-model="variable.metric" onspellcheck="false" placeholder="metric" data-min-length=0 data-items=150 ng-change="ctrl.getMetricSuggestions(variable.metric)">
+            <datalist id="responseSuggestions">
+              <option ng-repeat="suggestion in suggestions track by $index">{{suggestion}}</option>
+            </datalist>
+            <a class="gf-form-label" href="https://github.com/bosun-monitor/bosun-grafana-app#query-templating">
+              Help <i class="fa fa-question-circle"></i>
+            </a>
+            <button class="gf-form-label" ng-click="ctrl.deleteVariable(variable.id);">
+              <i class="fa fa-fw fa-trash" ng-click="ctrl.deleteVariable(variable.id);"></i>
+            </button>
+          </div>
+          <div class="gf-form" style="width:100%;align-items:flex-start;">
+            <label class="gf-form-label query-keyword">
+              Query Function
+            </label>
+            <select ng-model="variable.queryFunction" class="gf-form-input" style="width: 40%" ng-change="ctrl.updateFinalQuery(ctrl.target.finalQuery)">
+              <option ng-repeat="queryFunction in queryFunctions">{{queryFunction.func}}</option>
+            </select>
+            <label class="gf-form-label query-keyword">
+              Aggregator
+            </label>
+            <select class="gf-form-input" ng-model="variable.queryAgg" style="width: 40%" ng-change="ctrl.updateFinalQuery(ctrl.target.finalQuery)">
+              <option ng-repeat="aggOption in aggOptions">{{aggOption.text}}</option>
+            </select>
+            <label class="gf-form-label query-keyword">
+              Downsample
+            </label>
+            <input
+              class="gf-form-input" ng-model="variable.downsampleTime" rows="1" spellcheck="false" placeholder="1h" data-min-length=0 data-items=150 style="width: 30%" ng-change="ctrl.updateFinalQuery(ctrl.target.finalQuery)">
+            <select class="gf-form-input" ng-model="variable.downsampleAgg" style="width: 40%" ng-change="ctrl.updateFinalQuery(ctrl.target.finalQuery)">
+              <option ng-repeat="aggOption in aggOptions">{{aggOption.text}}</option>
+            </select>
+            <select class="gf-form-input" ng-model="variable.fillPolicy" style="width: 30%" ng-change="ctrl.updateFinalQuery(ctrl.target.finalQuery)">
+              <option ng-repeat="fillPolicy in fillPolicies">{{fillPolicy.text}}</option>
+            </select>
+            <label class="gf-form-label query-keyword">
+              Flags
+            </label>
+            <input class="gf-form-input" rows="1" ng-model="variable.flags" onspellcheck="false" placeholder="rate{counter,,1}" data-min-length=0 data-items=150 style="width: 40%" ng-change="ctrl.updateFinalQuery(ctrl.target.finalQuery)">
+          </div>
+          <div class="gf-form-inline" style="width:100%;">
+            <label class="gf-form-label query-keyword">
+              Group Tags
+            </label>
+            <div class="gf-form" ng-repeat="(tagId, name) in ctrl.target.variables[id].grouptagBoxes">
+              <label class="gf-form-label" ng-if="ctrl.target.variables[id].grouptagBoxes[tagId]['editorClosed']">
+                {{ctrl.target.variables[id].grouptagBoxes[tagId]['key']}}={{ctrl.target.variables[id].grouptagBoxes[tagId]['value']}}
+                <a>
+                  <i class="fa fa-fw fa-pencil" ng-click="ctrl.target.variables[id].grouptagBoxes[tagId]['editorClosed']=false;"></i>
+                </a>
+                <a>
+                  <i class="fa fa-fw fa-trash" ng-click="ctrl.deleteTag(id, tagId, 'group'); ctrl.updateFinalQuery(ctrl.target.finalQuery)"></i>
+                </a>
+              </label>
+            </div>
+            <div class="gf-form" ng-repeat="(tagId, name) in ctrl.target.variables[id].grouptagBoxes">
+              <input ng-if="!ctrl.target.variables[id].grouptagBoxes[tagId]['editorClosed']" class="gf-form-input" style="float:left" ng-model="ctrl.target.variables[id].grouptagBoxes[tagId]['key']" rows="1" spellcheck="false" placeholder="enter tag key" data-min-length=0 data-items=150>
+              <input ng-if="!ctrl.target.variables[id].grouptagBoxes[tagId]['editorClosed']" class="gf-form-input" style="float: left" ng-model="ctrl.target.variables[id].grouptagBoxes[tagId]['value']" rows="1" spellcheck="false" placeholder="enter tag value" data-min-length=0 data-items=150>
+              <button ng-if="!ctrl.target.variables[id].grouptagBoxes[tagId]['editorClosed']" class="gf-form-label">
+                <div class="gf-form" style="width:80%;align-items:flex-start;">
+                  <a ng-click="ctrl.target.variables[id].grouptagBoxes[tagId]['editorClosed']=true; ctrl.updateFinalQuery(ctrl.target.finalQuery)">Add</a>
+                  <a>
+                    <i class="fa fa-fw fa-trash" ng-click="ctrl.deleteTag(id, tagId, 'group'); ctrl.updateFinalQuery(ctrl.target.finalQuery)"></i>
+                  </a>
+                </div>
+              </button>
+            </div>
+            <label class="gf-form-label query-keyword" ng-click="ctrl.addTagBox(id, 'group')">
+              +
+            </label>
+          </div>
+          <div class="gf-form-inline" style="width:100%;">
+            <label class="gf-form-label query-keyword">
+              Filtering Tags
+            </label>
+            <div class="gf-form" ng-repeat="(tagId, name) in ctrl.target.variables[id].filtertagBoxes">
+              <label class="gf-form-label" ng-if="ctrl.target.variables[id].filtertagBoxes[tagId]['editorClosed']">
+                {{ctrl.target.variables[id].filtertagBoxes[tagId]['key']}}={{ctrl.target.variables[id].filtertagBoxes[tagId]['value']}}
+                <a>
+                  <i class="fa fa-fw fa-pencil" ng-click="ctrl.target.variables[id].filtertagBoxes[tagId]['editorClosed']=false;"></i>
+                </a>
+                <a>
+                  <i class="fa fa-fw fa-trash" ng-click="ctrl.deleteTag(id, tagId, 'filter'); ctrl.updateFinalQuery(ctrl.target.finalQuery)"></i>
+                </a>
+              </label>
+            </div>
+            <div class="gf-form" ng-repeat="(tagId, name) in ctrl.target.variables[id].filtertagBoxes">
+              <input ng-if="!ctrl.target.variables[id].filtertagBoxes[tagId]['editorClosed']" class="gf-form-input" style="float:left" ng-model="ctrl.target.variables[id].filtertagBoxes[tagId]['key']" rows="1" spellcheck="false" placeholder="enter tag key" data-min-length=0 data-items=150>
+              <input ng-if="!ctrl.target.variables[id].filtertagBoxes[tagId]['editorClosed']" class="gf-form-input" style="float: left" ng-model="ctrl.target.variables[id].filtertagBoxes[tagId]['value']" rows="1" spellcheck="false" placeholder="enter tag value" data-min-length=0 data-items=150>
+              <button ng-if="!ctrl.target.variables[id].filtertagBoxes[tagId]['editorClosed']" class="gf-form-label">
+                <div class="gf-form" style="width:80%;align-items:flex-start;">
+                  <a ng-click="ctrl.target.variables[id].filtertagBoxes[tagId]['editorClosed']=true; ctrl.updateFinalQuery(ctrl.target.finalQuery)">Add</a>
+                  <a>
+                    <i class="fa fa-fw fa-trash" ng-click="ctrl.deleteTag(id, tagId, 'filter'); ctrl.updateFinalQuery(ctrl.target.finalQuery)"></i>
+                  </a>
+                </div>
+              </button>
+            </div>
+            <label class="gf-form-label query-keyword" ng-click="ctrl.addTagBox(id, 'filter')">
+              +
+            </label>
+          </div>
+          <div class="gf-form" style="width:100%;align-items:flex-start;margin-bottom:15px;">
+            <label class="gf-form-label query-keyword">
+              Query Args
+            </label>
+
+            <input
+              ng-if="variable.queryFunction=='q' || variable.queryFunction=='change' || variable.queryFunction=='count'" ng-model="variable.startDuration" class="gf-form-input" rows="1" spellcheck="false" placeholder="startDuration" data-min-length=0 data-items=150 ng-change="ctrl.updateFinalQuery(ctrl.target.finalQuery)">
+            <input
+              ng-if="variable.queryFunction=='q' || variable.queryFunction=='change' || variable.queryFunction=='count'" ng-model="variable.endDuration" class="gf-form-input" rows="1" spellcheck="false" placeholder="endDuration" data-min-length=0 data-items=150 ng-change="ctrl.updateFinalQuery(ctrl.target.finalQuery)">
+            <input
+              ng-if="variable.queryFunction=='band' || variable.queryFunction=='over' || variable.queryFunction=='shiftBand' || variable.queryFunction=='window'" ng-model="variable.duration" class="gf-form-input" rows="1" spellcheck="false" placeholder="duration" data-min-length=0 data-items=150 ng-change="ctrl.updateFinalQuery(ctrl.target.finalQuery)">
+            <input
+              ng-if="variable.queryFunction=='band' || variable.queryFunction=='over' || variable.queryFunction=='shiftBand' || variable.queryFunction=='window'" ng-model="variable.period" class="gf-form-input" rows="1" spellcheck="false" placeholder="period" data-min-length=0 data-items=150 ng-change="ctrl.updateFinalQuery(ctrl.target.finalQuery)">
+            <input
+              ng-if="variable.queryFunction=='band' || variable.queryFunction=='over' || variable.queryFunction=='shiftBand' || variable.queryFunction=='window'" ng-model="variable.num" class="gf-form-input" rows="1" spellcheck="false" placeholder="num" data-min-length=0 data-items=150 ng-change="ctrl.updateFinalQuery(ctrl.target.finalQuery)">
+            <input
+              ng-if="variable.queryFunction=='window'" ng-model="variable.funcName" class="gf-form-input" rows="1" spellcheck="false" placeholder="funcName" data-min-length=0 data-items=150 ng-change="ctrl.updateFinalQuery(ctrl.target.finalQuery)">
+          </div>
+          <div ng-model="elem$index" />
         </div>
+      </div>
+    </li>
+  </ul>
 
 
-        <div class="gf-form" style="width:20%;">
-            <label class="gf-form-label query-keyword width-8">
-                Alias:<tip>Use patterns like $tag_tagname to replace part of the alias for a tag value</tip>
-            </label>
-            <input type="text" class="gf-form-input" ng-model="ctrl.target.alias" spellcheck='false' placeholder="series alias" data-min-length=0
-                data-items=100 ng-blur="ctrl.targetBlur()" ng-change="ctrl.onChangeInternal()"></input>
-        </div>
+  <div class="gf-form" style="width:80%;align-items:flex-start;">
+    <div class="gf-form" style="width:80%;align-items:flex-start;">
+      <label class="gf-form-label query-keyword" ng-click="ctrl.addNewVariable('variable')">
+        Var +
+      </label>
+      <label class="gf-form-label query-keyword" ng-click="ctrl.addNewVariable('queryVariable')">
+        Query +
+      </label>
     </div>
-    <div ng-if="ctrl.datasource.showHelper">
-        <section class="grafana-metric-options gf-form-group">
-            <div class="gf-form-inline ">
-                <div class="gf-form ">
-                    <button class="btn btn-inverse " ng-click="ctrl.target.expandHelper=ctrl.target.expandHelper==0 ? 1:0;
+  </div>
+
+  <div class="gf-form" style="width:80%;align-items:flex-start;">
+    <label class="gf-form-label query-keyword">
+      Final Query
+    </label>
+    <textarea class="gf-form-input" rows="3" ng-model="ctrl.target.finalQuery" spellcheck='false' placeholder='$query'
+              data-min-length=0 data-items=15 ng-change="ctrl.updateFinalQuery(ctrl.target.finalQuery)" ng-click="ctrl.updateFinalQuery(ctrl.target.finalQuery)">
+    </textarea>
+  </div>
+
+  <div class="gf-form" style="width:20%;">
+    <button class="btn navbar-button" ng-click="ctrl.copyToClipboard(ctrl.datasource.postQuery)">
+      Copy Substituted Query <i class="fa fa-fw fa-clipboard"></i>
+    </button>
+  </div>
+
+  <div class="gf-form" style="width:20%;">
+    <label class="gf-form-label query-keyword width-8">
+      Alias:<tip>Use patterns like $tag_tagname to replace part of the alias for a tag value</tip>
+    </label>
+    <input type="text" class="gf-form-input" ng-model="ctrl.target.alias" spellcheck='false' placeholder="series alias" data-min-length=0
+           data-items=100 ng-blur="ctrl.targetBlur()" ng-change="ctrl.onChangeInternal()"></input>
+  </div>
+
+  </div>
+  <div ng-if="ctrl.datasource.showHelper">
+    <section class="grafana-metric-options gf-form-group">
+      <div class="gf-form-inline ">
+        <div class="gf-form ">
+          <button class="btn btn-inverse " ng-click="ctrl.target.expandHelper=ctrl.target.expandHelper==0 ? 1:0;
             " bs-tooltip="
             'This shows the OpenTSDB query helper. If you are using Bosun with OpenTSDB and are indexing your OpenTSDB data to Bosun, you can use this to build q() functions based on the metadata Bosun has.' ">OpenTSDB Query Function Helper</button>
-                </div>
-            </div>
-        </section>
-
-        <div class="gf-form-group gf-form-horizontal " ng-show="ctrl.target.expandHelper===1 ">
-            <div class="gf-form-group ">
-                <div class="gf-form ">
-                    <label class="gf-form-label width-10 ">
-                    Metric
-                </label>
-                    <input type="text " class="gf-form-input " ng-model="ctrl.queryHelper.metric " spellcheck='false' bs-typeahead="ctrl.suggestMetrics "
-                        placeholder="metric name " data-min-length=0 data-items=100 ng-change="ctrl.metricInfo() " ng-blur="ctrl.targetBlur() ">
-                    </input>
-                </div>
-                <div class="gf-form " ng-repeat="(i, tagInfo) in ctrl.queryHelper.tagKeysToValues ">
-                    <div class="gf-form ">
-                        <label class="gf-form-label width-10 " ng-bind="tagInfo.key "></label>
-                        <input type="text " class="gf-form-input " spellcheck='false' bs-typeahead="tagInfo.value " ng-model="ctrl.queryHelper.tagKeysToValues[i].selectedValue "
-                            ng-change="ctrl.suggestQuery() ">
-                        </input>
-                    </div>
-                    <div class="gf-form ">
-                        <div class="gf-form-select-wrapper ">
-                            <select class="gf-form-input gf-size-auto " ng-model="ctrl.queryHelper.tagKeysToValues[i].filterType
-            " ng-options="f for f in ctrl.filterTypes " ng-change="ctrl.suggestQuery() "></select>
-                        </div>
-                    </div>
-                </div>
-                <div class="gf-form-inline ">
-                    <div class="gf-form gf-form--grow ">
-                        <label class="gf-form-label width-10 ">Generated Query</label>
-                        <input type="text " class="gf-form-input " ng-model="ctrl.queryHelper.suggestedQuery " readonly></input>
-                    </div>
-                    <div class="gf-form ">
-                        <button class="btn btn-inverse width-12 " ng-model="ctrl.queryHelper.suggestedQuery " ng-click="ctrl.addSuggest() ">Add To Query</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="gf-form-group ">
-                <div class="gf-form-inline ">
-                    <div class="gf-form ">
-                        <label class="gf-form-label width-10 ">Unit</label>
-                        <input type="text " class="gf-form-input max-width-12 " ng-model="ctrl.queryHelper.unit " readonly></input>
-                    </div>
-                    <div ng-if="ctrl.panelCtrl.panel.type==='graph' " class="gf-form ">
-                        <button class="btn btn-inverse width-12 " ng-model="ctrl.queryHelper.suggestedQuery " ng-click="ctrl.labelFromUnit() ">Set Y Axis Label</button>
-                    </div>
-                    <div ng-if="ctrl.panelCtrl.panel.type==='singlestat' " class="gf-form ">
-                        <button class="btn btn-inverse width-12 " ng-model="ctrl.queryHelper.suggestedQuery " ng-click="ctrl.labelFromUnit() ">Set Postfix</button>
-                    </div>
-                </div>
-                <div class="gf-form ">
-                    <label class="gf-form-label width-10 ">Rate Type</label>
-                    <input type="text " class="gf-form-input max-width-12 " ng-model="ctrl.queryHelper.rate " readonly></input>
-                </div>
-                <div class="gf-form ">
-                    <label class="gf-form-label width-10 ">Desc</label>
-                    <textarea class="gf-form-input " ng-model="ctrl.queryHelper.desc " readonly></textarea>
-                </div>
-            </div>
         </div>
+      </div>
+    </section>
+
+    <div class="gf-form-group gf-form-horizontal " ng-show="ctrl.target.expandHelper===1 ">
+      <div class="gf-form-group ">
+        <div class="gf-form ">
+          <label class="gf-form-label width-10 ">
+            Metric
+          </label>
+          <input type="text " class="gf-form-input " ng-model="ctrl.queryHelper.metric " spellcheck='false' bs-typeahead="ctrl.suggestMetrics "
+                 placeholder="metric name " data-min-length=0 data-items=100 ng-change="ctrl.metricInfo() " ng-blur="ctrl.targetBlur() ">
+          </input>
+        </div>
+        <div class="gf-form " ng-repeat="(i, tagInfo) in ctrl.queryHelper.tagKeysToValues ">
+          <div class="gf-form ">
+            <label class="gf-form-label width-10 " ng-bind="tagInfo.key "></label>
+            <input type="text " class="gf-form-input " spellcheck='false' bs-typeahead="tagInfo.value " ng-model="ctrl.queryHelper.tagKeysToValues[i].selectedValue "
+                   ng-change="ctrl.suggestQuery() ">
+            </input>
+          </div>
+          <div class="gf-form ">
+            <div class="gf-form-select-wrapper ">
+              <select class="gf-form-input gf-size-auto " ng-model="ctrl.queryHelper.tagKeysToValues[i].filterType
+            " ng-options="f for f in ctrl.filterTypes " ng-change="ctrl.suggestQuery() "></select>
+            </div>
+          </div>
+        </div>
+        <div class="gf-form-inline ">
+          <div class="gf-form gf-form--grow ">
+            <label class="gf-form-label width-10 ">Generated Query</label>
+            <input type="text " class="gf-form-input " ng-model="ctrl.queryHelper.suggestedQuery " readonly></input>
+          </div>
+          <div class="gf-form ">
+            <button class="btn btn-inverse width-12 " ng-model="ctrl.queryHelper.suggestedQuery " ng-click="ctrl.addSuggest() ">Add To Query</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="gf-form-group ">
+        <div class="gf-form-inline ">
+          <div class="gf-form ">
+            <label class="gf-form-label width-10 ">Unit</label>
+            <input type="text " class="gf-form-input max-width-12 " ng-model="ctrl.queryHelper.unit " readonly></input>
+          </div>
+          <div ng-if="ctrl.panelCtrl.panel.type==='graph' " class="gf-form ">
+            <button class="btn btn-inverse width-12 " ng-model="ctrl.queryHelper.suggestedQuery " ng-click="ctrl.labelFromUnit() ">Set Y Axis Label</button>
+          </div>
+          <div ng-if="ctrl.panelCtrl.panel.type==='singlestat' " class="gf-form ">
+            <button class="btn btn-inverse width-12 " ng-model="ctrl.queryHelper.suggestedQuery " ng-click="ctrl.labelFromUnit() ">Set Postfix</button>
+          </div>
+        </div>
+        <div class="gf-form ">
+          <label class="gf-form-label width-10 ">Rate Type</label>
+          <input type="text " class="gf-form-input max-width-12 " ng-model="ctrl.queryHelper.rate " readonly></input>
+        </div>
+        <div class="gf-form ">
+          <label class="gf-form-label width-10 ">Desc</label>
+          <textarea class="gf-form-input " ng-model="ctrl.queryHelper.desc " readonly></textarea>
+        </div>
+      </div>
     </div>
+  </div>
 </query-editor-row>

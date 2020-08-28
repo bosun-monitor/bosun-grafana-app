@@ -12,6 +12,15 @@
 </div>
 
 <div class="gf-form-group">
+  <div class="gf-form max-width-30">
+    <span class="gf-form-label">OpenTSDB URL</span>
+    <input type="text" class="gf-form-input" ng-model="ctrl.current.jsonData.openTSDBUrl"
+           spellcheck='false'></input>
+    <info-popover mode="right-absolute">Required for metric autocompletion</info-popover>
+  </div>
+</div>
+
+<div class="gf-form-group">
 	<div class="gf-form max-width-30">
 		<span class="gf-form-label">Annotate URL</span>
 		<input type="text" class="gf-form-input" ng-model="ctrl.current.jsonData.annotateUrl"
