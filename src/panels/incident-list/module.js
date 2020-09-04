@@ -34,6 +34,7 @@ export class BosunIncidentListCtrl extends MetricsPanelCtrl {
         this.datasourceSrv.get(this.panel.datasource).then(datasource => {
             this.preRelease = datasource.preRelease;
         });
+        this.events.on('init-edit-mode', this.onInitMetricsPanelEditMode.bind(this));
     }
 
     onInitMetricsPanelEditMode() {
@@ -187,7 +188,7 @@ export class BosunIncidentListCtrl extends MetricsPanelCtrl {
         this.showActionForm(incidents, this.selectedMultiAction)
     }
 
-    // incidents can be an incident, but also an [] of incidents    
+    // incidents can be an incident, but also an [] of incidents
     showActionForm(incidents, action) {
         if (!Array.isArray(incidents)) {
             incidents = [incidents]
