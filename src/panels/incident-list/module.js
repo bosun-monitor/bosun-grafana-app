@@ -34,6 +34,7 @@ export class BosunIncidentListCtrl extends MetricsPanelCtrl {
         this.datasourceSrv.get(this.panel.datasource).then(datasource => {
             this.preRelease = datasource.preRelease;
         });
+        this.events.on('init-edit-mode', this.onInitMetricsPanelEditMode.bind(this));
     }
 
     onInitMetricsPanelEditMode() {
