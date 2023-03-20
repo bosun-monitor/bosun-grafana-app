@@ -1,8 +1,7 @@
-module.exports = function(grunt) {
+module.exports = function (grunt) {
 
   require('load-grunt-tasks')(grunt);
 
-  grunt.loadNpmTasks('grunt-execute');
   grunt.loadNpmTasks('grunt-contrib-clean');
 
   grunt.initConfig({
@@ -13,12 +12,12 @@ module.exports = function(grunt) {
       src_to_dist: {
         cwd: 'src',
         expand: true,
-        src: ['**/*', '!**/*.js', '!**/*.scss','!**/screenshots/**'],
+        src: ['**/*', '!**/*.js', '!**/*.scss', '!**/screenshots/**'],
         dest: 'dist'
       },
       pluginDef: {
         expand: true,
-        src: [ 'plugin.json', 'README.md' ],
+        src: ['plugin.json', 'README.md'],
         dest: 'dist',
       },
       img_to_dist: {
@@ -39,15 +38,15 @@ module.exports = function(grunt) {
       rebuild_all: {
         files: ['src/**/*', 'plugin.json'],
         tasks: ['default'],
-        options: {spawn: false}
+        options: { spawn: false }
       },
     },
 
     babel: {
       options: {
         sourceMap: true,
-        presets:  ["@babel/preset-env"],
-        plugins:  ["transform-es2015-modules-systemjs"]
+        presets: ["@babel/preset-env"],
+        plugins: ["@babel/plugin-transform-modules-systemjs"]
       },
       dist: {
         files: [{
@@ -55,7 +54,7 @@ module.exports = function(grunt) {
           expand: true,
           src: ['**/*.js'],
           dest: 'dist',
-          ext:'.js'
+          ext: '.js'
         }]
       },
     },
